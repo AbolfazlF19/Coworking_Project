@@ -1,0 +1,483 @@
+@using Microsoft.AspNetCore.Identity
+@using CoworkingSpace.Web.Models
+@inject SignInManager<ApplicationUser> SignInManager
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CoSpace Manager</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+            /* ===== Global Reset & Body ===== */
+            * { box-sizing: border-box; }
+            body {
+                background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+                min-height: 100vh;
+                font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* ===== Sidebar (Glass + Dark) ===== */
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                width: 270px;
+                background: rgba(30, 41, 59, 0.85);
+                backdrop-filter: blur(14px);
+                -webkit-backdrop-filter: blur(14px);
+                border-right: 1px solid rgba(255, 255, 255, 0.08);
+                color: #cbd5e1;
+                padding-top: 1.2rem;
+                overflow-y: auto;
+                transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+                z-index: 1040;
+                box-shadow: 4px 0 30px rgba(0, 0, 0, 0.12);
+            }
+            .sidebar::-webkit-scrollbar { width: 4px; }
+            .sidebar::-webkit-scrollbar-track { background: transparent; }
+            .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
+
+            .sidebar .brand-box {
+                padding: 0.5rem 1.5rem 1.8rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+                margin-bottom: 0.5rem;
+            }
+            .sidebar .brand-box .brand {
+                color: #ffffff;
+                font-size: 1.2rem;
+                font-weight: 700;
+                letter-spacing: -0.3px;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            .sidebar .brand-box .brand i { color: #818cf8; }
+            .sidebar .brand-box small {
+                color: #94a3b8;
+                font-size: 0.75rem;
+                letter-spacing: 0.02em;
+                display: block;
+                margin-top: 0.1rem;
+            }
+
+            .sidebar .nav-section {
+                text-transform: uppercase;
+                font-size: 0.65rem;
+                font-weight: 700;
+                color: #64748b;
+                padding: 1.2rem 1.5rem 0.4rem;
+                letter-spacing: 0.08em;
+            }
+
+            .sidebar a.nav-link {
+                color: #cbd5e1;
+                border-radius: 0.75rem;
+                margin: 0.2rem 0.9rem;
+                padding: 0.55rem 1rem;
+                font-weight: 500;
+                font-size: 0.9rem;
+                transition: all 0.2s;
+                display: flex;
+                align-items: center;
+                gap: 0.6rem;
+                text-decoration: none;
+            }
+            .sidebar a.nav-link i {
+                font-size: 1.1rem;
+                width: 1.4rem;
+                text-align: center;
+                color: #94a3b8;
+                transition: color 0.2s;
+            }
+            .sidebar a.nav-link:hover {
+                background: rgba(255, 255, 255, 0.08);
+                color: #ffffff;
+            }
+            .sidebar a.nav-link:hover i { color: #a5b4fc; }
+            .sidebar a.nav-link.active {
+                background: rgba(99, 102, 241, 0.2);
+                color: #ffffff;
+                box-shadow: inset 3px 0 0 #818cf8;
+            }
+            .sidebar a.nav-link.active i { color: #818cf8; }
+
+            .sidebar .px-3 {
+                padding-left: 1.2rem !important;
+                padding-right: 1.2rem !important;
+            }
+
+            /* ===== Main Content ===== */
+            .main {
+                margin-left: 270px;
+                padding: 1.25rem 1.8rem 3rem;
+                min-height: 100vh;
+                transition: margin 0.3s ease;
+            }
+
+            /* ===== Topbar (Glass) ===== */
+            .topbar {
+                position: sticky;
+                top: 0;
+                z-index: 1020;
+                background: rgba(255, 255, 255, 0.7);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+                padding: 0.6rem 1.8rem;
+                margin: -1.25rem -1.8rem 1.8rem;
+                border-radius: 0 0 1.5rem 1.5rem;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+            }
+            .topbar .navbar-toggler-sidebar {
+                background: rgba(255, 255, 255, 0.6);
+                border: 1px solid rgba(255, 255, 255, 0.8);
+                border-radius: 60px;
+                padding: 0.3rem 0.8rem;
+                font-size: 1.2rem;
+                color: #1e293b;
+                transition: all 0.2s;
+                display: none;
+            }
+            .topbar .navbar-toggler-sidebar:hover {
+                background: #ffffff;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            }
+            .topbar .page-title {
+                font-weight: 600;
+                color: #1e293b;
+                font-size: 1.05rem;
+                letter-spacing: -0.2px;
+            }
+
+            /* ===== Public Layout (no sidebar) - Improved ===== */
+            .public-nav {
+                background: rgba(255, 255, 255, 0.75);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+                box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+                padding: 0.6rem 1rem;
+            }
+            .public-nav .container {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-between;
+                gap: 0.5rem;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 0.5rem;
+            }
+            .public-nav .brand {
+                font-weight: 700;
+                font-size: 1.2rem;
+                color: #0f172a;
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                white-space: nowrap;
+            }
+            .public-nav .brand i { color: #4f46e5; }
+
+            .public-nav .btn-outline-glass {
+                background: rgba(255,255,255,0.5);
+                border: 1px solid #e2e8f0;
+                border-radius: 60px;
+                padding: 0.35rem 1.2rem;
+                font-weight: 600;
+                color: #1e293b;
+                transition: all 0.2s;
+                text-decoration: none;
+                font-size: 0.9rem;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4rem;
+                white-space: nowrap;
+            }
+            .public-nav .btn-outline-glass:hover {
+                background: #ffffff;
+                border-color: #94a3b8;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            }
+            .public-nav .btn-primary-glass {
+                background: linear-gradient(135deg, #4f46e5, #4338ca);
+                border: none;
+                border-radius: 60px;
+                padding: 0.35rem 1.5rem;
+                font-weight: 600;
+                color: #ffffff;
+                transition: all 0.2s;
+                text-decoration: none;
+                font-size: 0.9rem;
+                box-shadow: 0 4px 16px rgba(79,70,229,0.2);
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4rem;
+                white-space: nowrap;
+            }
+            .public-nav .btn-primary-glass:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 24px rgba(79,70,229,0.3);
+                color: #ffffff;
+            }
+
+            .public-container {
+                padding: 2rem 1.5rem;
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            /* ===== Footer ===== */
+            .main-footer {
+                text-align: center;
+                color: #94a3b8;
+                font-size: 0.8rem;
+                padding: 2rem 0 1rem;
+                border-top: 1px solid rgba(255,255,255,0.4);
+                margin-top: 2rem;
+                background: transparent;
+            }
+            .main-footer a {
+                color: #4f46e5;
+                text-decoration: none;
+            }
+            .main-footer a:hover { text-decoration: underline; }
+
+            /* ===== Responsive ===== */
+            @@media (max-width: 991.98px) {
+                .sidebar {
+                    transform: translateX(-100%);
+                    width: 280px;
+                }
+                .sidebar.show { transform: translateX(0); }
+                .main {
+                    margin-left: 0;
+                    padding: 0.75rem 0.75rem 2rem;
+                }
+                .topbar {
+                    margin: -0.75rem -0.75rem 1.2rem;
+                    padding: 0.5rem 1rem;
+                    border-radius: 0 0 1.2rem 1.2rem;
+                }
+                .topbar .navbar-toggler-sidebar { display: inline-block; }
+            }
+
+            @@media (max-width: 576px) {
+                .public-nav .container {
+                    flex-direction: column;
+                    align-items: stretch;
+                    gap: 0.5rem;
+                }
+                .public-nav .brand { justify-content: center; }
+                .public-nav .d-flex {
+                    justify-content: center;
+                    flex-wrap: wrap;
+                }
+                .public-container {
+                    padding: 1rem 0.5rem;
+                }
+                .topbar .page-title { font-size: 0.9rem; }
+            }
+
+            /* ===== Override Bootstrap for glassmorphism ===== */
+            .card {
+                background: rgba(255, 255, 255, 0.7) !important;
+                backdrop-filter: blur(8px) !important;
+                -webkit-backdrop-filter: blur(8px) !important;
+                border: 1px solid rgba(255, 255, 255, 0.5) !important;
+                box-shadow: 0 8px 24px -8px rgba(0,0,0,0.04) !important;
+            }
+            .btn-primary {
+                background: linear-gradient(135deg, #4f46e5, #4338ca) !important;
+                border: none !important;
+                box-shadow: 0 4px 16px rgba(79,70,229,0.2) !important;
+                border-radius: 60px !important;
+                padding: 0.5rem 1.5rem !important;
+                font-weight: 600 !important;
+                transition: all 0.25s !important;
+            }
+            .btn-primary:hover {
+                transform: translateY(-2px) !important;
+                box-shadow: 0 8px 24px rgba(79,70,229,0.3) !important;
+                background: linear-gradient(135deg, #4338ca, #3730a3) !important;
+            }
+            .btn-outline-primary {
+                border-color: #818cf8 !important;
+                color: #4f46e5 !important;
+                border-radius: 60px !important;
+                font-weight: 600 !important;
+                transition: all 0.25s !important;
+            }
+            .btn-outline-primary:hover {
+                background: #4f46e5 !important;
+                color: #fff !important;
+                border-color: #4f46e5 !important;
+                transform: translateY(-2px) !important;
+            }
+            .btn-outline-secondary {
+                border-color: #e2e8f0 !important;
+                color: #475569 !important;
+                border-radius: 60px !important;
+                font-weight: 500 !important;
+            }
+            .btn-outline-secondary:hover {
+                background: #f1f5f9 !important;
+                border-color: #94a3b8 !important;
+                color: #0f172a !important;
+            }
+            .form-control, .form-select {
+                background: rgba(255,255,255,0.6) !important;
+                border: 1.5px solid #e2e8f0 !important;
+                border-radius: 1rem !important;
+                padding: 0.6rem 1rem !important;
+                transition: all 0.25s !important;
+            }
+            .form-control:focus, .form-select:focus {
+                border-color: #818cf8 !important;
+                box-shadow: 0 0 0 4px rgba(99,102,241,0.1) !important;
+                background: #ffffff !important;
+            }
+            .badge {
+                font-weight: 600 !important;
+                padding: 0.3rem 0.9rem !important;
+                border-radius: 60px !important;
+            }
+    </style>
+</head>
+<body>
+
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <!-- ====== SIDEBAR (Logged-in) ====== -->
+        <aside class="sidebar" id="sidebar">
+            <div class="brand-box">
+                <div class="brand">
+                    <i class="bi bi-buildings"></i> CoSpace Manager
+                </div>
+                <small>Co-working Management</small>
+            </div>
+
+            <div class="nav-section">Main</div>
+            @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
+            {
+                <a class="nav-link" asp-controller="Dashboard" asp-action="Index">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+            }
+
+            <a class="nav-link" asp-controller="Reservations" asp-action="Index">
+                <i class="bi bi-calendar-check"></i> @(User.IsInRole("Member") ? "My Reservations" : "Reservations")
+            </a>
+
+            @if (User.IsInRole("Member"))
+            {
+                <a class="nav-link" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-house-door me-2"></i> Dashboard
+                </a>
+                <a class="nav-link" asp-controller="Profile" asp-action="Index">
+                    <i class="bi bi-person-circle me-2"></i>My Profile
+                </a>
+                <a class="nav-link" asp-controller="Reservations" asp-action="Create"><i class="bi bi-plus-circle me-2"></i>Book a Space</a>
+                <a class="nav-link" asp-controller="Payments" asp-action="Index"><i class="bi bi-credit-card me-2"></i>My Payments</a>
+            }
+
+            @if (User.IsInRole("Admin") || User.IsInRole("Staff"))
+            {
+                <a class="nav-link" asp-controller="Payments" asp-action="Index">
+                    <i class="bi bi-cash-coin"></i> Payments
+                </a>
+            }
+
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="nav-section">Management</div>
+                <a class="nav-link" asp-controller="Spaces" asp-action="Index">
+                    <i class="bi bi-door-open"></i> Spaces
+                </a>
+                <a class="nav-link" asp-controller="Equipment" asp-action="Index">
+                    <i class="bi bi-hdd-stack"></i> Equipment
+                </a>
+                <a class="nav-link" asp-controller="SpaceEquipment" asp-action="Index">
+                    <i class="bi bi-diagram-3"></i> Space-Equipment
+                </a>
+                <a class="nav-link" asp-controller="Prices" asp-action="Index">
+                    <i class="bi bi-tag"></i> Prices
+                </a>
+                <a class="nav-link" asp-controller="Members" asp-action="Index">
+                    <i class="bi bi-people"></i> Members
+                </a>
+                <a class="nav-link" asp-controller="Staff" asp-action="Index">
+                    <i class="bi bi-person-badge"></i> Staff
+                </a>
+                <a class="nav-link" asp-controller="Maintenance" asp-action="Index">
+                    <i class="bi bi-tools"></i> Maintenance
+                </a>
+            }
+
+            <div class="nav-section">Account</div>
+            <div class="px-3">
+                <partial name="_LoginPartial" />
+            </div>
+        </aside>
+
+        <!-- ====== MAIN CONTENT (Logged-in) ====== -->
+        <div class="main">
+            <div class="topbar">
+                <button class="navbar-toggler-sidebar" onclick="document.getElementById('sidebar').classList.toggle('show')" aria-label="Toggle sidebar">
+                    <i class="bi bi-list"></i>
+                </button>
+                <span class="page-title">@ViewData["Title"]</span>
+            </div>
+
+            <partial name="_Alerts" />
+            @RenderBody()
+        </div>
+    }
+    else
+    {
+        <!-- ====== PUBLIC LAYOUT (No sidebar) ====== -->
+        <nav class="public-nav">
+            <div class="container">
+                <a class="brand" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-buildings"></i> CoSpace Manager
+                </a>
+                <div class="d-flex gap-2 flex-wrap">
+                    <a class="btn-outline-glass" asp-controller="Account" asp-action="Login">
+                        <i class="bi bi-box-arrow-in-right"></i> Login
+                    </a>
+                    <a class="btn-primary-glass" asp-controller="Account" asp-action="Register">
+                        <i class="bi bi-person-plus"></i> Become a Member
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="public-container">
+            <partial name="_Alerts" />
+            @RenderBody()
+        </div>
+    }
+
+    <!-- ====== FOOTER ====== -->
+    <footer class="main-footer">
+        &copy; @DateTime.Now.Year CoSpace Manager —
+        <a href="#" target="_blank">ASP.NET Core 8 MVC</a>
+    </footer>
+
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

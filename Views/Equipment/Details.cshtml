@@ -1,0 +1,368 @@
+@model CoworkingSpace.Web.Models.Equipment
+@{
+    ViewData["Title"] = "Equipment Details";
+}
+
+<style>
+    .details-wrapper {
+        min-height: 80vh;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        padding: 1.5rem;
+    }
+
+    .details-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+        .details-header h3 {
+            font-weight: 800;
+            font-size: 1.8rem;
+            letter-spacing: -0.025em;
+            color: #0f172a;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+            .details-header h3 i {
+                color: #4f46e5;
+                font-size: 1.8rem;
+            }
+
+    .btn-back {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-radius: 60px;
+        padding: 0.5rem 1.5rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: #1e293b;
+        transition: all 0.25s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .btn-back:hover {
+            background: #ffffff;
+            border-color: #94a3b8;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            color: #0f172a;
+            text-decoration: none;
+        }
+
+    .details-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-radius: 2rem;
+        box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        padding: 2rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .details-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.12);
+        }
+
+        .details-card dl {
+            margin-bottom: 0;
+        }
+
+        .details-card dt {
+            font-weight: 600;
+            color: #475569;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            padding-top: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .details-card dd {
+            padding-top: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #0f172a;
+            font-weight: 500;
+            margin-bottom: 0;
+        }
+
+            .details-card dt:last-of-type,
+            .details-card dd:last-of-type {
+                border-bottom: none;
+            }
+
+        .details-card .empty-value {
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+    /* Spaces list card */
+    .spaces-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 1.5rem;
+        box-shadow: 0 8px 24px -10px rgba(0, 0, 0, 0.06);
+        padding: 1.5rem 2rem;
+        margin-top: 1.5rem;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+        .spaces-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 32px -12px rgba(0, 0, 0, 0.08);
+        }
+
+        .spaces-card h5 {
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+            .spaces-card h5 i {
+                color: #4f46e5;
+            }
+
+    .spaces-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+        .spaces-list li {
+            padding: 0.6rem 0.75rem;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #1e293b;
+            font-weight: 500;
+            transition: background 0.15s;
+            border-radius: 0.5rem;
+        }
+
+            .spaces-list li:hover {
+                background: rgba(241, 245, 249, 0.5);
+            }
+
+            .spaces-list li:last-child {
+                border-bottom: none;
+            }
+
+        .spaces-list .qty-badge {
+            background: #e2e8f0;
+            color: #475569;
+            padding: 0.2rem 0.8rem;
+            border-radius: 60px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+    .empty-spaces {
+        color: #94a3b8;
+        font-style: italic;
+        padding: 0.5rem 0;
+    }
+
+    /* Action buttons */
+    .action-buttons {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-top: 1.5rem;
+    }
+
+    .btn-edit {
+        background: linear-gradient(135deg, #4f46e5, #4338ca);
+        border: none;
+        padding: 0.6rem 2rem;
+        border-radius: 60px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: #fff;
+        transition: all 0.25s ease;
+        box-shadow: 0 8px 20px -6px rgba(79, 70, 229, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        text-decoration: none;
+    }
+
+        .btn-edit:hover {
+            background: linear-gradient(135deg, #4338ca, #3730a3);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px -8px rgba(79, 70, 229, 0.4);
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .btn-edit i {
+            font-size: 1rem;
+        }
+
+    .btn-delete-glass {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1.5px solid #fca5a5;
+        padding: 0.6rem 2rem;
+        border-radius: 60px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: #dc2626;
+        transition: all 0.25s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        text-decoration: none;
+    }
+
+        .btn-delete-glass:hover {
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #b91c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px -6px rgba(220, 38, 38, 0.2);
+            text-decoration: none;
+        }
+
+        .btn-delete-glass i {
+            font-size: 1rem;
+        }
+
+    /* Responsive */
+    @@media (max-width: 576px) {
+        .details-wrapper {
+            padding: 0.75rem;
+        }
+
+        .details-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+            .details-header h3 {
+                font-size: 1.4rem;
+            }
+
+        .details-card {
+            padding: 1.25rem;
+        }
+
+        .spaces-card {
+            padding: 1rem 1.25rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-edit,
+        .btn-delete-glass {
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="details-wrapper">
+    <!-- Header -->
+    <div class="details-header">
+        <h3>
+            <i class="bi bi-tools"></i>
+            @Model.Name
+        </h3>
+        <a asp-action="Index" class="btn-back">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    </div>
+
+    <!-- Details Card -->
+    <div class="details-card">
+        <dl class="row mb-0">
+            <dt class="col-sm-3">Name</dt>
+            <dd class="col-sm-9">@Model.Name</dd>
+
+            <dt class="col-sm-3">Category</dt>
+            <dd class="col-sm-9">
+                @if (string.IsNullOrEmpty(Model.Category))
+                {
+                    <span class="empty-value">—</span>
+                }
+                else
+                {
+                    @Model.Category
+                }
+            </dd>
+
+            <dt class="col-sm-3">Description</dt>
+            <dd class="col-sm-9">
+                @if (string.IsNullOrEmpty(Model.Description))
+                {
+                    <span class="empty-value">—</span>
+                }
+                else
+                {
+                    @Model.Description
+                }
+            </dd>
+        </dl>
+    </div>
+
+    <!-- Spaces using this equipment -->
+    @if (Model.SpaceEquipments != null && Model.SpaceEquipments.Any())
+    {
+        <div class="spaces-card">
+            <h5>
+                <i class="bi bi-door-open"></i> Used in these spaces
+            </h5>
+            <ul class="spaces-list">
+                @foreach (var se in Model.SpaceEquipments)
+                {
+                    <li>
+                        <span>@se.Space?.SpaceName</span>
+                        <span class="qty-badge">Qty @se.Quantity</span>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+    else
+    {
+        <div class="spaces-card">
+            <h5>
+                <i class="bi bi-door-open"></i> Used in these spaces
+            </h5>
+            <div class="empty-spaces">Not currently used in any space.</div>
+        </div>
+    }
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+        <a asp-action="Edit" asp-route-id="@Model.EquipmentId" class="btn-edit">
+            <i class="bi bi-pencil"></i> Edit
+        </a>
+        <a asp-action="Delete" asp-route-id="@Model.EquipmentId" class="btn-delete-glass">
+            <i class="bi bi-trash"></i> Delete
+        </a>
+    </div>
+</div>

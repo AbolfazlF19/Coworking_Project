@@ -1,0 +1,809 @@
+﻿@model CoworkingSpace.Web.ViewModels.ReservationCreateViewModel
+@{
+    ViewData["Title"] = "Book a Space";
+}
+
+<style>
+    .reserve-wrapper {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        padding: 1.5rem;
+    }
+
+    .reserve-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 2.5rem;
+        padding: 2.5rem 2rem;
+        max-width: 900px;
+        width: 100%;
+        margin: 0 auto;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .reserve-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.25);
+        }
+
+    .reserve-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(145deg, #dbeafe, #bfdbfe);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.2rem;
+        box-shadow: 0 12px 28px -10px rgba(37, 99, 235, 0.25);
+    }
+
+        .reserve-icon i {
+            font-size: 2.8rem;
+            color: #2563eb;
+            text-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+    .reserve-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        color: #0f172a;
+        text-align: center;
+        margin-bottom: 0.25rem;
+    }
+
+    .reserve-sub {
+        text-align: center;
+        color: #64748b;
+        font-size: 0.95rem;
+        margin-bottom: 1.8rem;
+    }
+
+    /* ===== Space Cards Grid ===== */
+    .spaces-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.8rem;
+    }
+
+    .space-select-card {
+        background: rgba(255, 255, 255, 0.5);
+        border: 2px solid #e2e8f0;
+        border-radius: 1.2rem;
+        padding: 0.75rem;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        text-align: center;
+        position: relative;
+    }
+
+        .space-select-card:hover {
+            border-color: #93c5fd;
+            background: rgba(255, 255, 255, 0.8);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.08);
+        }
+
+        .space-select-card.selected {
+            border-color: #2563eb;
+            background: rgba(37, 99, 235, 0.05);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .space-select-card .card-image {
+            width: 100%;
+            height: 120px;
+            border-radius: 0.8rem;
+            overflow: hidden;
+            background: #f1f5f9;
+            margin-bottom: 0.5rem;
+        }
+
+            .space-select-card .card-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.3s;
+            }
+
+        .space-select-card:hover .card-image img {
+            transform: scale(1.03);
+        }
+
+        .space-select-card .card-image .no-image {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            background: #f1f5f9;
+        }
+
+            .space-select-card .card-image .no-image i {
+                font-size: 2rem;
+                margin-right: 0.3rem;
+                opacity: 0.4;
+            }
+
+        .space-select-card .space-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #0f172a;
+            margin-bottom: 0.15rem;
+        }
+
+        .space-select-card .space-type {
+            font-size: 0.7rem;
+            color: #4f46e5;
+            background: rgba(79, 70, 229, 0.08);
+            padding: 0.1rem 0.6rem;
+            border-radius: 60px;
+            display: inline-block;
+            border: 1px solid rgba(79, 70, 229, 0.1);
+        }
+
+        .space-select-card .space-capacity {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 0.2rem;
+        }
+
+        .space-select-card .check-mark {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            width: 24px;
+            height: 24px;
+            background: #2563eb;
+            color: #fff;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .space-select-card.selected .check-mark {
+            display: flex;
+        }
+
+    /* ===== Form Fields ===== */
+    .form-floating-custom {
+        margin-bottom: 1.25rem;
+    }
+
+        .form-floating-custom label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #334155;
+            margin-bottom: 0.35rem;
+            display: block;
+        }
+
+        .form-floating-custom .form-control,
+        .form-floating-custom .form-select {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1.5px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 0.7rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.25s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            width: 100%;
+        }
+
+            .form-floating-custom .form-control:focus,
+            .form-floating-custom .form-select:focus {
+                border-color: #3b82f6;
+                box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15), inset 0 2px 4px rgba(0,0,0,0.02);
+                background: #ffffff;
+            }
+
+        .form-floating-custom .text-danger {
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            display: block;
+        }
+
+    .form-row-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 1.25rem;
+    }
+
+    /* ===== Buttons ===== */
+    .form-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-top: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-book {
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        border: none;
+        padding: 0.7rem 2rem;
+        border-radius: 60px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #fff;
+        transition: all 0.25s ease;
+        box-shadow: 0 8px 20px -6px rgba(37, 99, 235, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        cursor: pointer;
+    }
+
+        .btn-book:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px -8px rgba(37, 99, 235, 0.4);
+            color: #fff;
+        }
+
+        .btn-book i {
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+        }
+
+        .btn-book:hover i {
+            transform: scale(1.1);
+        }
+
+        .btn-book:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+    .btn-cancel {
+        background: transparent;
+        border: 1.5px solid #e2e8f0;
+        padding: 0.7rem 1.5rem;
+        border-radius: 60px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #475569;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+        .btn-cancel:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+            color: #0f172a;
+            text-decoration: none;
+        }
+
+    .validation-summary-errors ul {
+        padding-left: 0;
+        list-style: none;
+        margin-bottom: 0.75rem;
+    }
+
+    .validation-summary-errors li {
+        background: #fee2e2;
+        color: #b91c1c;
+        border-radius: 0.75rem;
+        padding: 0.4rem 0.9rem;
+        font-size: 0.85rem;
+        margin-bottom: 0.3rem;
+        border-left: 4px solid #dc2626;
+    }
+
+    .selected-space-display {
+        background: rgba(37, 99, 235, 0.04);
+        border-radius: 1rem;
+        padding: 0.6rem 1rem;
+        border: 1px dashed #93c5fd;
+        margin-bottom: 1.2rem;
+        text-align: center;
+        color: #1e293b;
+        font-size: 0.95rem;
+    }
+
+        .selected-space-display strong {
+            color: #2563eb;
+        }
+
+    /* ===== Busy Slots Table (جدید) ===== */
+    .busy-slots-table {
+        margin-top: 1.5rem;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 1rem;
+        padding: 1rem;
+        backdrop-filter: blur(4px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+        .busy-slots-table h6 {
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .busy-slots-table .badge-maintenance {
+            background: #f59e0b;
+            color: #fff;
+        }
+
+        .busy-slots-table .badge-reservation {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .busy-slots-table .list-group-item {
+            background: transparent !important;
+            border-color: rgba(226, 232, 240, 0.5);
+            padding: 0.5rem 0;
+        }
+
+        .busy-slots-table .empty-text {
+            text-align: center;
+            color: #94a3b8;
+            font-style: italic;
+            padding: 0.5rem 0;
+        }
+
+    /* Responsive */
+    @@media (max-width: 576px) {
+        .reserve-card {
+            padding: 1.8rem 1.2rem;
+        }
+
+        .reserve-icon {
+            width: 65px;
+            height: 65px;
+        }
+
+            .reserve-icon i {
+                font-size: 2.2rem;
+            }
+
+        .reserve-title {
+            font-size: 1.5rem;
+        }
+
+        .spaces-grid {
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .space-select-card .card-image {
+            height: 90px;
+        }
+
+        .form-row-grid {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+
+        .form-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-book,
+        .btn-cancel {
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="reserve-wrapper">
+    <div class="reserve-card">
+        <div class="reserve-icon">
+            <i class="bi bi-calendar-plus"></i>
+        </div>
+
+        <h1 class="reserve-title">Book a Space</h1>
+        <p class="reserve-sub">Select a workspace and choose your time slot</p>
+
+        <form asp-action="Create" method="post" id="bookingForm">
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors text-danger"></div>
+
+            <!-- ===== Space Selection (Cards) ===== -->
+            <div class="form-floating-custom">
+                <label class="form-label">Select a Space</label>
+
+                @if (!Model.AvailableSpaces.Any())
+                {
+                    <div class="alert alert-warning">No active spaces available for booking.</div>
+                }
+                else
+                {
+                    <div class="spaces-grid" id="spaceGrid">
+                        @foreach (var space in Model.AvailableSpaces)
+                        {
+                            var primaryImage = space.Images != null && space.Images.Any()
+                                ? space.Images.FirstOrDefault(i => i.IsPrimary)?.ImagePath
+                                  ?? space.Images.FirstOrDefault()?.ImagePath
+                                : null;
+                            var isSelected = space.SpaceId == Model.SpaceId;
+
+                            <div class="space-select-card @(isSelected ? "selected" : "")"
+                                 data-spaceid="@space.SpaceId"
+                                 onclick="selectSpace(this, @space.SpaceId)">
+                                <div class="card-image">
+                                    @if (!string.IsNullOrEmpty(primaryImage))
+                                    {
+                                        <img src="@primaryImage" alt="@space.SpaceName" loading="lazy" />
+                                    }
+                                    else
+                                    {
+                                        <div class="no-image">
+                                            <i class="bi bi-image"></i> No image
+                                        </div>
+                                    }
+                                </div>
+                                <div class="space-name">@space.SpaceName</div>
+                                <div class="space-type">@space.SpaceType.ToSpacedString()</div>
+                                <div class="space-capacity">
+                                    <i class="bi bi-people"></i> @space.Capacity
+                                </div>
+                                <div class="check-mark"><i class="bi bi-check"></i></div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Hidden input for SpaceId -->
+                    <input type="hidden" asp-for="SpaceId" id="selectedSpaceId" />
+
+                    <!-- Display selected space name -->
+                    <div class="selected-space-display" id="selectedSpaceDisplay">
+                        @if (Model.SpaceId > 0)
+                        {
+                            var selectedSpace = Model.AvailableSpaces.FirstOrDefault(s => s.SpaceId == Model.SpaceId);
+                            if (selectedSpace != null)
+                            {
+                                <span>Selected: <strong>@selectedSpace.SpaceName</strong></span>
+                            }
+                        }
+                        else
+                        {
+                            <span style="color:#94a3b8;">No space selected yet. Click on a card above.</span>
+                        }
+                    </div>
+                }
+            </div>
+
+            <!-- ===== Member Selection (for Admin/Staff) ===== -->
+            @if (!User.IsInRole("Member"))
+            {
+                <div class="form-floating-custom">
+                    <label for="memberOverride" class="form-label">Member</label>
+                    <select id="memberOverride" name="memberOverride" class="form-select" asp-items="ViewBag.Members">
+                        <option value="">-- Select a member --</option>
+                    </select>
+                </div>
+            }
+
+            <!-- ===== هشدار قوانین کنسلی ===== -->
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <i class="bi bi-info-circle me-2"></i>
+                <strong>Cancellation Policy:</strong> You can cancel your reservation up to 24 hours before the start time.
+                Cancellations within 24 hours of the start time are not allowed.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <!-- ===== Start & End Time ===== -->
+            <div class="form-row-grid">
+                <div class="form-floating-custom">
+                    <label asp-for="StartTime" class="form-label">Start Time</label>
+                    <input asp-for="StartTime" class="form-control" type="datetime-local" id="startTime" />
+                    <span asp-validation-for="StartTime" class="text-danger"></span>
+                </div>
+                <div class="form-floating-custom">
+                    <label asp-for="EndTime" class="form-label">End Time</label>
+                    <input asp-for="EndTime" class="form-control" type="datetime-local" id="endTime" />
+                    <span asp-validation-for="EndTime" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- ===== Notes ===== -->
+            <div class="form-floating-custom">
+                <label asp-for="Notes" class="form-label">Notes (optional)</label>
+                <input asp-for="Notes" class="form-control" placeholder="Any special requests?" />
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+
+            <!-- ===== Display Busy Slots (جدید) ===== -->
+            <div class="busy-slots-table" id="busySlotsContainer" style="display:none;">
+                <h6><i class="bi bi-exclamation-triangle-fill text-warning"></i> Busy Time Slots</h6>
+                <div id="busySlotsList">
+                    <div class="empty-text">No busy slots in this time range.</div>
+                </div>
+            </div>
+
+            <!-- ===== Form Actions ===== -->
+            <div class="form-actions">
+                <button type="submit" class="btn-book" id="bookButton" disabled>
+                    <i class="bi bi-calendar-check"></i> Book Now
+                </button>
+                <a asp-controller="Home" asp-action="Index" class="btn-cancel">
+                    <i class="bi bi-x-circle"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        (function () {
+            'use strict';
+
+            // ============================================================
+            // DOM References
+            // ============================================================
+            var spaceIdInput = document.getElementById('selectedSpaceId');
+            var startTimeInput = document.getElementById('startTime');
+            var endTimeInput = document.getElementById('endTime');
+            var bookButton = document.getElementById('bookButton');
+            var selectedDisplay = document.getElementById('selectedSpaceDisplay');
+            var busyContainer = document.getElementById('busySlotsContainer');
+            var busyList = document.getElementById('busySlotsList');
+            var cards = document.querySelectorAll('.space-select-card');
+
+            var fetchTimeout = null;
+
+            // ============================================================
+            // Select space function (قابل دسترس در onclick)
+            // ============================================================
+            window.selectSpace = function (card, spaceId) {
+                // حذف کلاس selected از همه کارت‌ها
+                cards.forEach(function (c) {
+                    c.classList.remove('selected');
+                });
+
+                // اضافه کردن کلاس selected به کارت کلیک‌شده
+                card.classList.add('selected');
+
+                // مقداردهی فیلد مخفی
+                spaceIdInput.value = spaceId;
+
+                // به‌روزرسانی نمایش نام فضا
+                var spaceName = card.querySelector('.space-name')?.textContent || 'Space';
+                selectedDisplay.innerHTML = '<span>Selected: <strong>' + spaceName + '</strong></span>';
+
+                // فعال کردن دکمه Book
+                bookButton.disabled = false;
+
+                // بررسی در دسترس بودن (اگر تاریخ‌ها پر باشند)
+                checkAvailability();
+            };
+
+            // ============================================================
+            // فرمت تاریخ بدون ثانیه (برای نمایش)
+            // ============================================================
+            function formatDateTime(date) {
+                var d = new Date(date);
+                return d.getFullYear() + '/' +
+                       String(d.getMonth() + 1).padStart(2, '0') + '/' +
+                       String(d.getDate()).padStart(2, '0') + ' ' +
+                       String(d.getHours()).padStart(2, '0') + ':' +
+                       String(d.getMinutes()).padStart(2, '0');
+            }
+
+            // ============================================================
+            // بررسی حداقل ۲ ساعت آینده برای شروع رزرو
+            // ============================================================
+            function isStartTimeValid(start) {
+                var now = new Date();
+                var minStart = new Date(now.getTime() + 2 * 60 * 60 * 1000); // 2 ساعت بعد
+                return new Date(start) >= minStart;
+            }
+
+            // ============================================================
+            // بررسی ساعات غیرفعال (۲۳:۰۰ تا ۰۸:۰۰)
+            // ============================================================
+            function isWithinClosedHours(start, end) {
+                var s = new Date(start);
+                var e = new Date(end);
+                if ((e - s) > 86400000) return true;
+
+                var current = new Date(s);
+                current.setHours(0, 0, 0, 0);
+                var endDate = new Date(e);
+                endDate.setHours(0, 0, 0, 0);
+
+                while (current <= endDate) {
+                    var closedStart = new Date(current);
+                    closedStart.setHours(23, 0, 0, 0);
+                    var closedEnd = new Date(current);
+                    closedEnd.setDate(closedEnd.getDate() + 1);
+                    closedEnd.setHours(8, 0, 0, 0);
+
+                    if (s < closedEnd && e > closedStart) {
+                        return true;
+                    }
+                    current.setDate(current.getDate() + 1);
+                }
+                return false;
+            }
+
+            // ============================================================
+            // بررسی در دسترس بودن (با بافر ۳۰ دقیقه‌ای)
+            // ============================================================
+            function checkAvailability() {
+                var spaceId = parseInt(spaceIdInput.value);
+                var start = startTimeInput.value;
+                var end = endTimeInput.value;
+
+                if (!spaceId || !start || !end) {
+                    busyContainer.style.display = 'none';
+                    return;
+                }
+
+                var startDate = new Date(start);
+                var endDate = new Date(end);
+
+                // ===== بررسی حداقل ۲ ساعت آینده =====
+                if (!isStartTimeValid(start)) {
+                    busyList.innerHTML = '<div class="alert alert-danger">⚠️ Reservations must be made at least 2 hours in advance.</div>';
+                    busyContainer.style.display = 'block';
+                    return;
+                }
+
+                // بررسی ساعات غیرفعال
+                if (isWithinClosedHours(start, end)) {
+                    busyList.innerHTML = '<div class="alert alert-danger">⚠️ Reservations are not allowed between 23:00 and 08:00.</div>';
+                    busyContainer.style.display = 'block';
+                    return;
+                }
+
+                if (endDate <= startDate) {
+                    busyList.innerHTML = '<div class="alert alert-danger">End time must be after start time.</div>';
+                    busyContainer.style.display = 'block';
+                    return;
+                }
+
+                var url = '/Reservations/GetBusySlots?spaceId=' + spaceId +
+                          '&start=' + encodeURIComponent(start) +
+                          '&end=' + encodeURIComponent(end);
+
+                fetch(url)
+                    .then(function (response) { return response.json(); })
+                    .then(function (data) {
+                        if (data.length === 0) {
+                            busyList.innerHTML = '<div class="empty-text">✅ No busy slots in this time range.</div>';
+                            busyContainer.style.display = 'block';
+                            return;
+                        }
+
+                        var html = '<ul class="list-group list-group-flush">';
+                        data.forEach(function (slot) {
+                            var badgeClass = slot.type === 'Maintenance' ? 'badge-maintenance' : 'badge-reservation';
+                            var label = slot.type === 'Maintenance' ? '🔧 Maintenance (cleaning buffer)' : '📅 Reservation (cleaning buffer)';
+                            var detail = slot.type === 'Maintenance'
+                                ? slot.memberName
+                                : slot.memberName + ' (' + slot.reservationStatus + ')';
+
+                            html += '<li class="list-group-item d-flex justify-content-between align-items-center bg-transparent">';
+                            html += '<div><span class="badge ' + badgeClass + ' me-2">' + label + '</span>';
+                            html += formatDateTime(slot.startTime) + ' — ' + formatDateTime(slot.endTime);
+                            if (slot.originalStart) {
+                                html += ' <span class="text-muted small">(original: ' + formatDateTime(slot.originalStart) + ' — ' + formatDateTime(slot.originalEnd) + ')</span>';
+                            }
+                            html += '</div>';
+                            html += '<span class="text-muted small">' + detail + '</span>';
+                            html += '</li>';
+                        });
+                        html += '</ul>';
+                        busyList.innerHTML = html;
+                        busyContainer.style.display = 'block';
+                    })
+                    .catch(function () {
+                        busyList.innerHTML = '<div class="alert alert-danger">Error loading availability data.</div>';
+                        busyContainer.style.display = 'block';
+                    });
+            }
+
+            // ============================================================
+            // Debounced check on time change
+            // ============================================================
+            startTimeInput.addEventListener('change', function () {
+                clearTimeout(fetchTimeout);
+                fetchTimeout = setTimeout(checkAvailability, 300);
+            });
+            endTimeInput.addEventListener('change', function () {
+                clearTimeout(fetchTimeout);
+                fetchTimeout = setTimeout(checkAvailability, 300);
+            });
+
+            // ============================================================
+            // Pre-selected space (from query string)
+            // ============================================================
+            var preSelectedId = @Model.SpaceId;
+            if (preSelectedId > 0) {
+                cards.forEach(function (card) {
+                    var sid = parseInt(card.getAttribute('data-spaceid'));
+                    if (sid === preSelectedId) {
+                        // فراخوانی selectSpace برای انتخاب خودکار
+                        window.selectSpace(card, sid);
+                    }
+                });
+            }
+
+            // ============================================================
+            // Initial disable book button if no space selected
+            // ============================================================
+            if (!spaceIdInput.value || spaceIdInput.value === '0') {
+                bookButton.disabled = true;
+            }
+
+            // ============================================================
+            // Trigger availability check on page load if everything is set
+            // ============================================================
+            if (spaceIdInput.value && startTimeInput.value && endTimeInput.value) {
+                setTimeout(checkAvailability, 500);
+            }
+
+            // ============================================================
+            // Form submit validation
+            // ============================================================
+            document.querySelector('#bookingForm').addEventListener('submit', function (e) {
+                var spaceId = parseInt(spaceIdInput.value);
+                if (!spaceId) {
+                    e.preventDefault();
+                    alert('Please select a space.');
+                    return;
+                }
+
+                var start = startTimeInput.value;
+                var end = endTimeInput.value;
+                if (!start || !end) {
+                    e.preventDefault();
+                    alert('Please select start and end times.');
+                    return;
+                }
+
+                var startDate = new Date(start);
+                var endDate = new Date(end);
+                if (endDate <= startDate) {
+                    e.preventDefault();
+                    alert('End time must be after start time.');
+                    return;
+                }
+
+                // ===== بررسی حداقل ۲ ساعت آینده =====
+                if (!isStartTimeValid(start)) {
+                    e.preventDefault();
+                    alert('⚠️ Reservations must be made at least 2 hours in advance.');
+                    return;
+                }
+
+                if (isWithinClosedHours(start, end)) {
+                    e.preventDefault();
+                    alert('⚠️ Reservations are not allowed between 23:00 and 08:00.');
+                    return;
+                }
+
+                var busyItems = busyList.querySelectorAll('.list-group-item');
+                if (busyItems.length > 0) {
+                    e.preventDefault();
+                    alert('⚠️ This time range conflicts with existing reservations or maintenance (including 30-minute cleaning buffer).\nPlease choose another time.');
+                    return;
+                }
+            });
+
+        })();
+    </script>
+}

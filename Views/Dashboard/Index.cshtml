@@ -1,0 +1,483 @@
+@model CoworkingSpace.Web.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<style>
+    .dashboard-wrapper {
+        min-height: 80vh;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        padding: 1.5rem;
+        border-radius: 0;
+    }
+
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+        .dashboard-header h2 {
+            font-weight: 800;
+            font-size: 2rem;
+            letter-spacing: -0.025em;
+            color: #0f172a;
+            margin-bottom: 0.25rem;
+        }
+
+        .dashboard-header .sub {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .dashboard-header .date-badge {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            padding: 0.5rem 1.2rem;
+            border-radius: 60px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #1e293b;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            white-space: nowrap;
+        }
+
+    /* Stat Cards */
+    .stat-card {
+        background: rgba(255, 255, 255, 0.75);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-radius: 1.5rem;
+        padding: 1.25rem 1.25rem;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.06);
+        height: 100%;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+    .stat-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        flex-shrink: 0;
+        transition: transform 0.2s;
+    }
+
+    .stat-card:hover .stat-icon {
+        transform: scale(1.05);
+    }
+
+    .stat-icon.blue {
+        background: #dbeafe;
+        color: #2563eb;
+    }
+
+    .stat-icon.green {
+        background: #d1fae5;
+        color: #059669;
+    }
+
+    .stat-icon.orange {
+        background: #fef3c7;
+        color: #d97706;
+    }
+
+    .stat-icon.cyan {
+        background: #cffafe;
+        color: #0891b2;
+    }
+
+    .stat-icon.purple {
+        background: #ede9fe;
+        color: #7c3aed;
+    }
+
+    .stat-icon.pink {
+        background: #fce7f3;
+        color: #db2777;
+    }
+
+    .stat-content .label {
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        margin-bottom: 0.1rem;
+    }
+
+    .stat-content .value {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #0f172a;
+        line-height: 1.2;
+    }
+
+    .stat-card-sm {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 1.2rem;
+        padding: 1rem 0.75rem;
+        text-align: center;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        box-shadow: 0 4px 16px -6px rgba(0, 0, 0, 0.04);
+        height: 100%;
+    }
+
+        .stat-card-sm:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px -10px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        .stat-card-sm .label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+
+        .stat-card-sm .value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-top: 0.1rem;
+        }
+
+    /* Table card */
+    .table-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-radius: 2rem;
+        box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        margin-top: 1.5rem;
+    }
+
+        .table-card .card-header-custom {
+            background: transparent;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+            .table-card .card-header-custom h5 {
+                font-weight: 700;
+                font-size: 1.1rem;
+                color: #0f172a;
+                margin: 0;
+            }
+
+            .table-card .card-header-custom .btn-outline-glass {
+                background: rgba(255, 255, 255, 0.5);
+                border: 1px solid #e2e8f0;
+                border-radius: 60px;
+                padding: 0.35rem 1.2rem;
+                font-size: 0.8rem;
+                font-weight: 600;
+                color: #1e293b;
+                transition: all 0.2s;
+                text-decoration: none;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4rem;
+            }
+
+                .table-card .card-header-custom .btn-outline-glass:hover {
+                    background: #ffffff;
+                    border-color: #94a3b8;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+                    color: #0f172a;
+                }
+
+        .table-card .table {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+
+            .table-card .table thead th {
+                background: #f8fafc;
+                color: #475569;
+                font-weight: 600;
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                letter-spacing: 0.03em;
+                padding: 0.8rem 1rem;
+                border-bottom: 1px solid #e2e8f0;
+            }
+
+            .table-card .table tbody td {
+                padding: 0.8rem 1rem;
+                vertical-align: middle;
+                border-bottom: 1px solid #f1f5f9;
+                color: #1e293b;
+            }
+
+            .table-card .table tbody tr:hover {
+                background: rgba(241, 245, 249, 0.5);
+            }
+
+            .table-card .table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+    .badge-status {
+        font-weight: 600;
+        font-size: 0.7rem;
+        padding: 0.35rem 0.9rem;
+        border-radius: 60px;
+        background: #e2e8f0;
+        color: #475569;
+        text-transform: capitalize;
+    }
+
+        .badge-status.pending {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        .badge-status.confirmed {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-status.completed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-status.cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+    .empty-state {
+        padding: 2.5rem 1.5rem;
+        text-align: center;
+        color: #94a3b8;
+    }
+
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            display: block;
+            opacity: 0.5;
+        }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .dashboard-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+            .dashboard-header .date-badge {
+                align-self: flex-start;
+            }
+
+        .stat-content .value {
+            font-size: 1.4rem;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            font-size: 1.4rem;
+        }
+
+        .stat-card {
+            padding: 1rem;
+        }
+
+        .stat-card-sm .value {
+            font-size: 1.25rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .dashboard-wrapper {
+            padding: 0.75rem;
+        }
+
+        .table-card .card-header-custom {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+            .table-card .card-header-custom .btn-outline-glass {
+                align-self: flex-start;
+            }
+
+        .stat-card {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="dashboard-wrapper">
+    <!-- Header -->
+    <div class="dashboard-header">
+        <div>
+            <h2>Dashboard</h2>
+            <span class="sub">Overview of your co-working business</span>
+        </div>
+        <span class="date-badge">
+            <i class="bi bi-calendar3 me-1"></i> @DateTime.Now.ToString("dddd, dd MMM yyyy")
+        </span>
+    </div>
+
+    <!-- Big stat cards (4) -->
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-icon blue"><i class="bi bi-people"></i></div>
+                <div class="stat-content">
+                    <div class="label">Total Members</div>
+                    <div class="value">@Model.TotalMembers</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-icon green"><i class="bi bi-door-open"></i></div>
+                <div class="stat-content">
+                    <div class="label">Total Spaces</div>
+                    <div class="value">@Model.TotalSpaces</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-icon orange"><i class="bi bi-calendar-check"></i></div>
+                <div class="stat-content">
+                    <div class="label">Active Reservations (Today)</div>
+                    <div class="value">@Model.ActiveReservationsToday</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="stat-card">
+                <div class="stat-icon cyan"><i class="bi bi-cash-coin"></i></div>
+                <div class="stat-content">
+                    <div class="label">Revenue (This Month)</div>
+                    <div class="value">@Model.RevenueThisMonth.ToString("C")</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Small stat cards (4) -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3 col-6">
+            <div class="stat-card-sm">
+                <div class="label">Total Reservations</div>
+                <div class="value">@Model.TotalReservations</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card-sm">
+                <div class="label">Pending</div>
+                <div class="value">@Model.PendingReservations</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card-sm">
+                <div class="label">Equipment</div>
+                <div class="value">@Model.TotalEquipment</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card-sm">
+                <div class="label">Staff</div>
+                <div class="value">@Model.TotalStaff</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Reservations Table -->
+    <div class="table-card">
+        <div class="card-header-custom">
+            <h5><i class="bi bi-clock-history me-2"></i>Recent Reservations</h5>
+            <a asp-controller="Reservations" asp-action="Index" class="btn-outline-glass">
+                View all <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+        <div class="card-body p-0">
+            @if (!Model.RecentReservations.Any())
+            {
+                <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <span>No reservations yet.</span>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Member</th>
+                                <th>Space</th>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var r in Model.RecentReservations)
+                            {
+                                var statusText = r.ReservationStatus.ToSpacedString();
+                                var statusClass = statusText.ToLower() switch
+                                {
+                                    "pending" => "pending",
+                                    "confirmed" => "confirmed",
+                                    "completed" => "completed",
+                                    "cancelled" => "cancelled",
+                                    _ => ""
+                                };
+                                <tr>
+                                    <td>@r.Member?.FullName</td>
+                                    <td>@r.Space?.SpaceName</td>
+                                    <td>@r.StartTime.ToString("g")</td>
+                                    <td>@r.EndTime.ToString("g")</td>
+                                    <td>@r.TotalAmount.ToString("C")</td>
+                                    <td><span class="badge-status @statusClass">@statusText</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>

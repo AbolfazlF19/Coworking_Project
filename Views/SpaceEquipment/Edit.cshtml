@@ -1,0 +1,296 @@
+@model CoworkingSpace.Web.Models.SpaceEquipment
+@{
+    ViewData["Title"] = "Edit Assignment";
+}
+
+<style>
+    .edit-assign-wrapper {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        padding: 1.5rem;
+    }
+
+    .edit-assign-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 2.5rem;
+        padding: 2.5rem 2rem;
+        max-width: 620px;
+        width: 100%;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .edit-assign-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.25);
+        }
+
+    .edit-assign-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(145deg, #e0e7ff, #c7d2fe);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.2rem;
+        box-shadow: 0 12px 28px -10px rgba(99, 102, 241, 0.25);
+    }
+
+        .edit-assign-icon i {
+            font-size: 2.8rem;
+            color: #4f46e5;
+            text-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+        }
+
+    .edit-assign-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        color: #0f172a;
+        text-align: center;
+        margin-bottom: 0.25rem;
+    }
+
+    .edit-assign-sub {
+        text-align: center;
+        color: #64748b;
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .edit-assign-info {
+        background: rgba(241, 245, 249, 0.5);
+        backdrop-filter: blur(4px);
+        border-radius: 1rem;
+        padding: 0.6rem 1rem;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+        color: #1e293b;
+    }
+
+        .edit-assign-info strong {
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        .edit-assign-info .space-name {
+            color: #4f46e5;
+        }
+
+        .edit-assign-info .equip-name {
+            color: #4f46e5;
+        }
+
+    .form-floating-custom {
+        margin-bottom: 1.25rem;
+    }
+
+        .form-floating-custom label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #334155;
+            margin-bottom: 0.35rem;
+            display: block;
+        }
+
+        .form-floating-custom .form-control {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1.5px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 0.7rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.25s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            width: 100%;
+        }
+
+            .form-floating-custom .form-control:focus {
+                border-color: #818cf8;
+                box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15), inset 0 2px 4px rgba(0,0,0,0.02);
+                background: #ffffff;
+            }
+
+        .form-floating-custom .text-danger {
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            display: block;
+        }
+
+    .form-row-grid-2-1 {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 0 1.25rem;
+    }
+
+    .form-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-top: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-save {
+        background: linear-gradient(135deg, #4f46e5, #4338ca);
+        border: none;
+        padding: 0.7rem 2rem;
+        border-radius: 60px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #fff;
+        transition: all 0.25s ease;
+        box-shadow: 0 8px 20px -6px rgba(79, 70, 229, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        cursor: pointer;
+    }
+
+        .btn-save:hover {
+            background: linear-gradient(135deg, #4338ca, #3730a3);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px -8px rgba(79, 70, 229, 0.4);
+            color: #fff;
+        }
+
+        .btn-save i {
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+        }
+
+        .btn-save:hover i {
+            transform: scale(1.1);
+        }
+
+    .btn-cancel {
+        background: transparent;
+        border: 1.5px solid #e2e8f0;
+        padding: 0.7rem 1.5rem;
+        border-radius: 60px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #475569;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+        .btn-cancel:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+            color: #0f172a;
+            text-decoration: none;
+        }
+
+    .validation-summary-errors ul {
+        padding-left: 0;
+        list-style: none;
+        margin-bottom: 0.75rem;
+    }
+
+    .validation-summary-errors li {
+        background: #fee2e2;
+        color: #b91c1c;
+        border-radius: 0.75rem;
+        padding: 0.4rem 0.9rem;
+        font-size: 0.85rem;
+        margin-bottom: 0.3rem;
+        border-left: 4px solid #dc2626;
+    }
+
+    @@media (max-width: 576px) {
+        .edit-assign-card {
+            padding: 1.8rem 1.2rem;
+        }
+
+        .edit-assign-icon {
+            width: 65px;
+            height: 65px;
+        }
+
+            .edit-assign-icon i {
+                font-size: 2.2rem;
+            }
+
+        .edit-assign-title {
+            font-size: 1.5rem;
+        }
+
+        .form-row-grid-2-1 {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+
+        .form-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-save,
+        .btn-cancel {
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="edit-assign-wrapper">
+    <div class="edit-assign-card">
+        <div class="edit-assign-icon">
+            <i class="bi bi-pencil-square"></i>
+        </div>
+
+        <h1 class="edit-assign-title">Edit Assignment</h1>
+        <p class="edit-assign-sub">Update quantity or notes for this space-equipment link</p>
+
+        <!-- Display current assignment info -->
+        <div class="edit-assign-info">
+            <strong class="space-name">@Model.Space?.SpaceName</strong>
+            &nbsp;&mdash;&nbsp;
+            <strong class="equip-name">@Model.Equipment?.Name</strong>
+        </div>
+
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors text-danger"></div>
+            <input type="hidden" asp-for="SpaceId" />
+            <input type="hidden" asp-for="EquipmentId" />
+
+            <!-- Quantity & Notes -->
+            <div class="form-row-grid-2-1">
+                <div class="form-floating-custom">
+                    <label asp-for="Quantity" class="form-label"></label>
+                    <input asp-for="Quantity" class="form-control" type="number" min="1" />
+                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                </div>
+                <div class="form-floating-custom">
+                    <label asp-for="Notes" class="form-label"></label>
+                    <input asp-for="Notes" class="form-control" placeholder="Optional notes..." />
+                    <span asp-validation-for="Notes" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-save">
+                    <i class="bi bi-check-circle"></i> Save Changes
+                </button>
+                <a asp-action="Index" class="btn-cancel">
+                    <i class="bi bi-x-circle"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

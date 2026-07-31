@@ -1,0 +1,885 @@
+@model CoworkingSpace.Web.Models.Space
+@{
+    ViewData["Title"] = "Edit Space";
+}
+
+<style>
+    .space-edit-wrapper {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        padding: 1.5rem;
+    }
+
+    .space-edit-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 2.5rem;
+        padding: 2.5rem 2rem;
+        max-width: 850px;
+        width: 100%;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .space-edit-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.25);
+        }
+
+    .space-edit-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(145deg, #dbeafe, #bfdbfe);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.2rem;
+        box-shadow: 0 12px 28px -10px rgba(37, 99, 235, 0.25);
+    }
+
+        .space-edit-icon i {
+            font-size: 2.8rem;
+            color: #2563eb;
+            text-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+    .space-edit-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        color: #0f172a;
+        text-align: center;
+        margin-bottom: 0.25rem;
+    }
+
+    .space-edit-sub {
+        text-align: center;
+        color: #64748b;
+        font-size: 0.95rem;
+        margin-bottom: 1.8rem;
+    }
+
+    .form-floating-custom {
+        margin-bottom: 1.25rem;
+    }
+
+        .form-floating-custom label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #334155;
+            margin-bottom: 0.35rem;
+            display: block;
+        }
+
+        .form-floating-custom .form-control,
+        .form-floating-custom .form-select {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1.5px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 0.7rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.25s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            width: 100%;
+        }
+
+            .form-floating-custom .form-control:focus,
+            .form-floating-custom .form-select:focus {
+                border-color: #3b82f6;
+                box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15), inset 0 2px 4px rgba(0,0,0,0.02);
+                background: #ffffff;
+            }
+
+        .form-floating-custom .text-danger {
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            display: block;
+        }
+
+    .form-row-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 1.25rem;
+    }
+
+    .form-row-grid-2-1 {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 0 1.25rem;
+    }
+
+    .form-check-custom {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.25rem;
+    }
+
+        .form-check-custom input[type="checkbox"] {
+            width: 1.1rem;
+            height: 1.1rem;
+            accent-color: #2563eb;
+            border-radius: 0.3rem;
+            cursor: pointer;
+            border: 1.5px solid #cbd5e1;
+        }
+
+            .form-check-custom input[type="checkbox"]:checked {
+                border-color: #2563eb;
+            }
+
+        .form-check-custom label {
+            font-weight: 500;
+            color: #1e293b;
+            cursor: pointer;
+            user-select: none;
+            font-size: 0.95rem;
+        }
+
+    /* ===== Image Upload Section ===== */
+    .image-upload-section {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 1.2rem;
+        padding: 1.5rem;
+        border: 2px dashed #cbd5e1;
+        margin-bottom: 1.25rem;
+        transition: border-color 0.3s, background 0.3s;
+    }
+
+        .image-upload-section.drag-over {
+            border-color: #2563eb;
+            background: rgba(37, 99, 235, 0.04);
+        }
+
+    .image-upload-label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem 0;
+        cursor: pointer;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+        .image-upload-label i {
+            font-size: 2.5rem;
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+        }
+
+        .image-upload-label:hover {
+            color: #2563eb;
+        }
+
+            .image-upload-label:hover i {
+                color: #2563eb;
+            }
+
+        .image-upload-label input[type="file"] {
+            display: none;
+        }
+
+        .image-upload-label .file-hint {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-top: 0.3rem;
+        }
+
+    /* ===== Image Preview Grid ===== */
+    .image-preview-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+
+    .image-preview-item {
+        position: relative;
+        background: #f8fafc;
+        border-radius: 0.8rem;
+        overflow: hidden;
+        border: 2px solid #e2e8f0;
+        transition: border-color 0.2s, transform 0.2s;
+        cursor: grab;
+        aspect-ratio: 1 / 1;
+    }
+
+        .image-preview-item:hover {
+            border-color: #94a3b8;
+        }
+
+        .image-preview-item.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+
+        .image-preview-item.drag-over-item {
+            border-color: #2563eb;
+            transform: scale(1.02);
+        }
+
+        .image-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .image-preview-item .image-actions {
+            position: absolute;
+            top: 0.3rem;
+            right: 0.3rem;
+            display: flex;
+            gap: 0.2rem;
+        }
+
+            .image-preview-item .image-actions button {
+                background: rgba(0, 0, 0, 0.5);
+                backdrop-filter: blur(4px);
+                border: none;
+                color: #fff;
+                width: 26px;
+                height: 26px;
+                border-radius: 50%;
+                font-size: 0.75rem;
+                cursor: pointer;
+                transition: background 0.2s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+                .image-preview-item .image-actions button:hover {
+                    background: rgba(0, 0, 0, 0.8);
+                }
+
+            .image-preview-item .image-actions .btn-remove:hover {
+                background: #dc2626;
+            }
+
+            .image-preview-item .image-actions .btn-primary-toggle {
+                background: rgba(37, 99, 235, 0.7);
+            }
+
+                .image-preview-item .image-actions .btn-primary-toggle:hover {
+                    background: rgba(37, 99, 235, 0.9);
+                }
+
+                .image-preview-item .image-actions .btn-primary-toggle.is-primary {
+                    background: #2563eb;
+                }
+
+        .image-preview-item .image-order-number {
+            position: absolute;
+            bottom: 0.3rem;
+            left: 0.3rem;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.1rem 0.5rem;
+            border-radius: 20px;
+        }
+
+        .image-preview-item .primary-badge {
+            position: absolute;
+            top: 0.3rem;
+            left: 0.3rem;
+            background: #2563eb;
+            color: #fff;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 0.1rem 0.5rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .image-preview-item .existing-badge {
+            position: absolute;
+            bottom: 0.3rem;
+            right: 0.3rem;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            color: #fff;
+            font-size: 0.6rem;
+            padding: 0.1rem 0.5rem;
+            border-radius: 20px;
+        }
+
+    .image-preview-empty {
+        text-align: center;
+        padding: 1rem 0;
+        color: #94a3b8;
+        font-size: 0.9rem;
+    }
+
+    /* ===== Form Actions ===== */
+    .form-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-top: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-save-space {
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        border: none;
+        padding: 0.7rem 2rem;
+        border-radius: 60px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #fff;
+        transition: all 0.25s ease;
+        box-shadow: 0 8px 20px -6px rgba(37, 99, 235, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        cursor: pointer;
+    }
+
+        .btn-save-space:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px -8px rgba(37, 99, 235, 0.4);
+            color: #fff;
+        }
+
+        .btn-save-space i {
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+        }
+
+        .btn-save-space:hover i {
+            transform: scale(1.1);
+        }
+
+    .btn-cancel {
+        background: transparent;
+        border: 1.5px solid #e2e8f0;
+        padding: 0.7rem 1.5rem;
+        border-radius: 60px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #475569;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+        .btn-cancel:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+            color: #0f172a;
+            text-decoration: none;
+        }
+
+    .validation-summary-errors ul {
+        padding-left: 0;
+        list-style: none;
+        margin-bottom: 0.75rem;
+    }
+
+    .validation-summary-errors li {
+        background: #fee2e2;
+        color: #b91c1c;
+        border-radius: 0.75rem;
+        padding: 0.4rem 0.9rem;
+        font-size: 0.85rem;
+        margin-bottom: 0.3rem;
+        border-left: 4px solid #dc2626;
+    }
+
+    /* Responsive */
+    @@media (max-width: 576px) {
+        .space-edit-card {
+            padding: 1.8rem 1.2rem;
+        }
+
+        .space-edit-icon {
+            width: 65px;
+            height: 65px;
+        }
+
+            .space-edit-icon i {
+                font-size: 2.2rem;
+            }
+
+        .space-edit-title {
+            font-size: 1.5rem;
+        }
+
+        .form-row-grid,
+        .form-row-grid-2-1 {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+
+        .form-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-save-space,
+        .btn-cancel {
+            justify-content: center;
+        }
+
+        .image-preview-grid {
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 0.5rem;
+        }
+    }
+</style>
+
+<div class="space-edit-wrapper">
+    <div class="space-edit-card">
+        <div class="space-edit-icon">
+            <i class="bi bi-pencil-square"></i>
+        </div>
+
+        <h1 class="space-edit-title">Edit Space</h1>
+        <p class="space-edit-sub">Update the details of this workspace</p>
+
+        <form asp-action="Edit" method="post" enctype="multipart/form-data" id="spaceForm">          
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors text-danger"></div>
+            <input type="hidden" asp-for="SpaceId" />
+            <input type="hidden" asp-for="CreatedAt" />
+
+
+            
+
+            <!-- ===== Basic Info ===== -->
+            <div class="form-row-grid">
+                <div class="form-floating-custom">
+                    <label asp-for="SpaceName" class="form-label"></label>
+                    <input asp-for="SpaceName" class="form-control" placeholder="e.g. Meeting Room A" />
+                    <span asp-validation-for="SpaceName" class="text-danger"></span>
+                </div>
+                <div class="form-floating-custom">
+                    <label asp-for="SpaceType" class="form-label"></label>
+                    <select asp-for="SpaceType" asp-items="Html.GetEnumSelectList<SpaceType>()" class="form-select"></select>
+                    <span asp-validation-for="SpaceType" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-row-grid-2-1">
+                <div class="form-floating-custom">
+                    <label asp-for="Location" class="form-label"></label>
+                    <input asp-for="Location" class="form-control" placeholder="Building, floor, etc." />
+                    <span asp-validation-for="Location" class="text-danger"></span>
+                </div>
+                <div class="form-floating-custom">
+                    <label asp-for="Capacity" class="form-label"></label>
+                    <input asp-for="Capacity" class="form-control" type="number" min="1" placeholder="e.g. 10" />
+                    <span asp-validation-for="Capacity" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-floating-custom">
+                <div class="form-check-custom">
+                    <input asp-for="IsActive" class="form-check-input" />
+                    <label asp-for="IsActive" class="form-check-label"></label>
+                </div>
+            </div>
+
+            <!-- ===== Image Upload Section ===== -->
+            <div class="image-upload-section" id="dropZone">
+                <label class="image-upload-label" for="imageInput">
+                    <i class="bi bi-cloud-upload"></i>
+                    <span>Click to select images or drag & drop</span>
+                    <span class="file-hint">Supported: JPG, PNG, WebP (max 5MB each)</span>
+                    <input type="file" id="imageInput" name="imageFiles" multiple accept="image/jpeg,image/png,image/webp" style="display:none;">
+                </label>
+
+                <!-- Preview Grid -->
+                <div class="image-preview-grid" id="previewGrid">
+                    <!-- Existing images will be loaded here via JavaScript -->
+                    <div class="image-preview-empty" id="emptyPreview">
+                        <i class="bi bi-image" style="font-size:1.5rem;display:block;margin-bottom:0.3rem;"></i>
+                        No images uploaded yet
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hidden fields for image data -->
+            <input type="hidden" name="imageData" id="imageData" value="" />
+            <input type="hidden" name="deletedImageIds" id="deletedImageIds" value="" />
+
+            <!-- ===== Form Actions ===== -->
+            <div class="form-actions">
+                <button type="submit" class="btn-save-space">
+                    <i class="bi bi-check-circle"></i> Save Changes
+                </button>
+                <a asp-action="Index" class="btn-cancel">
+                    <i class="bi bi-x-circle"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        (function () {
+            'use strict';
+
+            // ============================================================
+            // DOM References
+            // ============================================================
+            var dropZone = document.getElementById('dropZone');
+            var fileInput = document.getElementById('imageInput');
+            var previewGrid = document.getElementById('previewGrid');
+            var emptyPreview = document.getElementById('emptyPreview');
+            var imageDataInput = document.getElementById('imageData');
+            var deletedImageIdsInput = document.getElementById('deletedImageIds');
+
+            // ============================================================
+            // Data Structure
+            // ============================================================
+            // Each item: { id, source: 'existing'|'new', imageId (if existing),
+            //              file (if new), imagePath (if existing), isPrimary, order }
+            var imageList = [];
+            var deletedIds = [];
+            var nextTempId = 0;
+
+            // ============================================================
+            // Load existing images from server
+            // ============================================================
+            @if (Model.Images != null && Model.Images.Any())
+            {
+                                @:var existingImages = @Html.Raw(Json.Serialize(Model.Images.OrderBy(i => i.DisplayOrder).Select(i => new { i.ImageId, i.ImagePath, i.IsPrimary, i.DisplayOrder })));
+                                @:existingImages.forEach(function (img) {
+                                @:    imageList.push({
+                                @:        id: 'existing_' + img.imageId,
+                                @:        source: 'existing',
+                                @:        imageId: img.imageId,
+                                @:        imagePath: img.imagePath,
+                                @:        isPrimary: img.isPrimary,
+                                @:        order: img.displayOrder
+                                @:    });
+                                @:});
+                                @:nextTempId = 1000;
+            }
+
+            // ============================================================
+            // Render preview grid
+            // ============================================================
+            function rebuildPreview() {
+                // Clear grid (keep empty placeholder)
+                var items = previewGrid.querySelectorAll('.image-preview-item');
+                items.forEach(function (el) { el.remove(); });
+
+                if (imageList.length === 0) {
+                    emptyPreview.style.display = 'block';
+                    return;
+                }
+                emptyPreview.style.display = 'none';
+
+                // Sort by order
+                var sorted = imageList.slice().sort(function (a, b) { return a.order - b.order; });
+
+                sorted.forEach(function (item, index) {
+                    var div = document.createElement('div');
+                    div.className = 'image-preview-item';
+                    div.dataset.id = item.id;
+                    div.dataset.index = index;
+                    div.draggable = true;
+
+                    // Image
+                    var img = document.createElement('img');
+                    if (item.source === 'existing') {
+                        img.src = item.imagePath;
+                    } else {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            img.src = e.target.result;
+                        };
+                        reader.readAsDataURL(item.file);
+                    }
+                    div.appendChild(img);
+
+                    // Primary badge
+                    if (item.isPrimary) {
+                        var badge = document.createElement('div');
+                        badge.className = 'primary-badge';
+                        badge.textContent = 'Primary';
+                        div.appendChild(badge);
+                    }
+
+                    // Existing badge (for existing images)
+                    if (item.source === 'existing') {
+                        var existingBadge = document.createElement('div');
+                        existingBadge.className = 'existing-badge';
+                        existingBadge.textContent = 'Saved';
+                        div.appendChild(existingBadge);
+                    }
+
+                    // Order number
+                    var orderNum = document.createElement('div');
+                    orderNum.className = 'image-order-number';
+                    orderNum.textContent = '#' + (index + 1);
+                    div.appendChild(orderNum);
+
+                    // Action buttons
+                    var actions = document.createElement('div');
+                    actions.className = 'image-actions';
+
+                    // Primary toggle button
+                    var primaryBtn = document.createElement('button');
+                    primaryBtn.className = 'btn-primary-toggle' + (item.isPrimary ? ' is-primary' : '');
+                    primaryBtn.innerHTML = '<i class="bi bi-star' + (item.isPrimary ? '-fill' : '') + '"></i>';
+                    primaryBtn.title = item.isPrimary ? 'Primary image' : 'Set as primary';
+                    primaryBtn.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        setPrimary(item.id);
+                    });
+                    actions.appendChild(primaryBtn);
+
+                    // Remove button
+                    var removeBtn = document.createElement('button');
+                    removeBtn.className = 'btn-remove';
+                    removeBtn.innerHTML = '<i class="bi bi-x"></i>';
+                    removeBtn.title = 'Remove image';
+                    removeBtn.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        removeImage(item.id);
+                    });
+                    actions.appendChild(removeBtn);
+
+                    div.appendChild(actions);
+
+                    // Drag events
+                    div.addEventListener('dragstart', function (e) {
+                        e.dataTransfer.setData('text/plain', item.id);
+                        this.classList.add('dragging');
+                    });
+
+                    div.addEventListener('dragend', function (e) {
+                        this.classList.remove('dragging');
+                    });
+
+                    div.addEventListener('dragover', function (e) {
+                        e.preventDefault();
+                        this.classList.add('drag-over-item');
+                    });
+
+                    div.addEventListener('dragleave', function (e) {
+                        this.classList.remove('drag-over-item');
+                    });
+
+                    div.addEventListener('drop', function (e) {
+                        e.preventDefault();
+                        this.classList.remove('drag-over-item');
+                        var draggedId = e.dataTransfer.getData('text/plain');
+                        if (draggedId && draggedId !== item.id) {
+                            swapOrder(draggedId, item.id);
+                        }
+                    });
+
+                    previewGrid.appendChild(div);
+                });
+
+                updateHiddenFields();
+            }
+
+            // ============================================================
+            // Set primary image
+            // ============================================================
+            function setPrimary(id) {
+                imageList.forEach(function (item) {
+                    item.isPrimary = (item.id === id);
+                });
+                rebuildPreview();
+            }
+
+            // ============================================================
+            // Remove image
+            // ============================================================
+            function removeImage(id) {
+                var item = imageList.find(function (i) { return i.id === id; });
+                if (item) {
+                    if (item.source === 'existing' && item.imageId) {
+                        deletedIds.push(item.imageId);
+                    }
+                    imageList = imageList.filter(function (i) { return i.id !== id; });
+                    // Reorder
+                    imageList.forEach(function (i, index) {
+                        i.order = index;
+                    });
+                    rebuildPreview();
+                }
+            }
+
+            // ============================================================
+            // Swap order (drag & drop)
+            // ============================================================
+            function swapOrder(draggedId, targetId) {
+                var draggedItem = imageList.find(function (i) { return i.id === draggedId; });
+                var targetItem = imageList.find(function (i) { return i.id === targetId; });
+                if (!draggedItem || !targetItem) return;
+
+                var draggedOrder = draggedItem.order;
+                draggedItem.order = targetItem.order;
+                targetItem.order = draggedOrder;
+
+                // Sort by order
+                imageList.sort(function (a, b) { return a.order - b.order; });
+                // Normalize orders
+                imageList.forEach(function (item, index) {
+                    item.order = index;
+                });
+
+                rebuildPreview();
+            }
+
+            // ============================================================
+            // Handle new file selection
+            // ============================================================
+            function handleFiles(files) {
+                var validFiles = [];
+                var allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+                var maxSize = 5 * 1024 * 1024; // 5MB
+
+                Array.from(files).forEach(function (file) {
+                    if (!allowedTypes.includes(file.type)) {
+                        alert('Invalid file type: ' + file.name + '. Only JPG, PNG, and WebP are allowed.');
+                        return;
+                    }
+                    if (file.size > maxSize) {
+                        alert('File too large: ' + file.name + '. Maximum size is 5MB.');
+                        return;
+                    }
+                    validFiles.push(file);
+                });
+
+                if (validFiles.length === 0) return;
+
+                // Add to image list
+                var startOrder = imageList.length;
+                validFiles.forEach(function (file, i) {
+                    var id = 'new_' + (nextTempId++);
+                    imageList.push({
+                        id: id,
+                        source: 'new',
+                        file: file,
+                        isPrimary: false,
+                        order: startOrder + i
+                    });
+                });
+
+                // If no primary exists, set the first new image as primary
+                var hasPrimary = imageList.some(function (i) { return i.isPrimary; });
+                if (!hasPrimary && imageList.length > 0) {
+                    imageList[0].isPrimary = true;
+                }
+
+
+                rebuildPreview();
+            }
+
+            // ============================================================
+            // Update hidden fields with image data for server
+            // ============================================================
+            function updateHiddenFields() {
+                // Image data (for new and existing images with updated info)
+                var data = imageList.map(function (item) {
+                    return {
+                        id: item.id,
+                        source: item.source,
+                        imageId: item.imageId || 0,
+                        fileName: item.file ? item.file.name : '',
+                        fileSize: item.file ? item.file.size : 0,
+                        fileType: item.file ? item.file.type : '',
+                        isPrimary: item.isPrimary,
+                        order: item.order
+                    };
+                });
+                imageDataInput.value = JSON.stringify(data);
+
+                // Deleted image IDs
+                deletedImageIdsInput.value = JSON.stringify(deletedIds);
+            }
+
+            // ============================================================
+            // Drag & Drop Support for new files
+            // ============================================================
+            dropZone.addEventListener('dragover', function (e) {
+                e.preventDefault();
+                dropZone.classList.add('drag-over');
+            });
+
+            dropZone.addEventListener('dragleave', function (e) {
+                e.preventDefault();
+                dropZone.classList.remove('drag-over');
+            });
+
+            dropZone.addEventListener('drop', function (e) {
+                e.preventDefault();
+                dropZone.classList.remove('drag-over');
+                if (e.dataTransfer.files.length > 0) {
+                    fileInput.files = e.dataTransfer.files;
+                    handleFiles(e.dataTransfer.files);
+                }
+            });
+
+            fileInput.addEventListener('change', function () {
+                if (this.files.length > 0) {
+                    handleFiles(this.files);
+                }
+            });
+
+            // ============================================================
+            // Form submit: validate
+            // ============================================================
+            document.getElementById('spaceForm').addEventListener('submit', function (e) {
+                if (imageList.length === 0) {
+                    e.preventDefault();
+                    alert('Please upload at least one image for the space.');
+                    return;
+                }
+
+                // Ensure there's exactly one primary image
+                var primaryCount = imageList.filter(function (i) { return i.isPrimary; }).length;
+                if (primaryCount === 0) {
+                    // Auto-set first image as primary
+                    if (imageList.length > 0) {
+                        imageList[0].isPrimary = true;
+                        rebuildPreview();
+                    }
+                } else if (primaryCount > 1) {
+                    var foundFirst = false;
+                    imageList.forEach(function (item) {
+                        if (item.isPrimary) {
+                            if (!foundFirst) {
+                                foundFirst = true;
+                            } else {
+                                item.isPrimary = false;
+                            }
+                        }
+                    });
+                    rebuildPreview();
+                }
+
+                updateHiddenFields();
+            });
+
+            // ============================================================
+            // Initial render
+            // ============================================================
+            rebuildPreview();
+        })();
+    </script>
+}

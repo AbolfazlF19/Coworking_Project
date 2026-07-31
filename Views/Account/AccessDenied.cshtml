@@ -1,0 +1,182 @@
+@{
+    ViewData["Title"] = "Access Denied";
+}
+
+<style>
+    .access-denied-wrapper {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 1.5rem;
+    }
+
+    .access-card {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 2rem;
+        padding: 3rem 2.5rem;
+        max-width: 520px;
+        width: 100%;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: center;
+    }
+
+        .access-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.3);
+        }
+
+    .icon-wrapper {
+        width: 110px;
+        height: 110px;
+        background: linear-gradient(145deg, #fee2e2, #fecaca);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.8rem;
+        box-shadow: 0 12px 30px -8px rgba(220, 38, 38, 0.25);
+        animation: pulse-glow 2.5s infinite alternate;
+    }
+
+        .icon-wrapper i {
+            font-size: 4.2rem;
+            color: #dc2626;
+            text-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+    @@keyframes pulse-glow {
+        0% {
+            box-shadow: 0 12px 30px -8px rgba(220, 38, 38, 0.2);
+        }
+
+        100% {
+            box-shadow: 0 12px 45px 4px rgba(220, 38, 38, 0.35);
+        }
+    }
+
+    .access-title {
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        color: #111827;
+        margin-bottom: 0.5rem;
+    }
+
+    .access-subtitle {
+        font-size: 0.95rem;
+        color: #6b7280;
+        line-height: 1.6;
+        max-width: 340px;
+        margin: 0 auto 2rem;
+    }
+
+    .btn-access-home {
+        background: linear-gradient(135deg, #1e293b, #0f172a);
+        border: none;
+        padding: 0.8rem 2.4rem;
+        border-radius: 60px;
+        font-weight: 600;
+        font-size: 1rem;
+        color: #fff;
+        transition: all 0.25s ease;
+        box-shadow: 0 8px 20px -6px rgba(15, 23, 42, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        text-decoration: none;
+    }
+
+        .btn-access-home:hover {
+            background: linear-gradient(135deg, #0f172a, #020617);
+            transform: translateY(-3px);
+            box-shadow: 0 14px 28px -8px rgba(15, 23, 42, 0.4);
+            color: #fff;
+        }
+
+        .btn-access-home i {
+            font-size: 1.2rem;
+            transition: transform 0.2s ease;
+        }
+
+        .btn-access-home:hover i {
+            transform: translateX(4px);
+        }
+
+    .footer-note {
+        margin-top: 1.8rem;
+        font-size: 0.8rem;
+        color: #9ca3af;
+        letter-spacing: 0.02em;
+    }
+
+        .footer-note a {
+            color: #6b7280;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+            .footer-note a:hover {
+                color: #1e293b;
+                text-decoration: underline;
+            }
+
+    /* Responsive */
+    @@media (max-width: 576px) {
+        .access-card {
+            padding: 2rem 1.5rem;
+        }
+
+        .icon-wrapper {
+            width: 85px;
+            height: 85px;
+        }
+
+            .icon-wrapper i {
+                font-size: 3.2rem;
+            }
+
+        .access-title {
+            font-size: 1.6rem;
+        }
+
+        .btn-access-home {
+            padding: 0.7rem 1.8rem;
+            font-size: 0.95rem;
+        }
+    }
+</style>
+
+<div class="access-denied-wrapper">
+    <div class="access-card">
+        <!-- Icon -->
+        <div class="icon-wrapper">
+            <i class="bi bi-shield-lock-fill"></i>
+        </div>
+
+        <!-- Title -->
+        <h1 class="access-title">Access Denied</h1>
+
+        <!-- Message -->
+        <p class="access-subtitle">
+            You don’t have permission to view this page.
+            If you think this is a mistake, please contact your administrator.
+        </p>
+
+        <!-- Action Button -->
+        <a asp-controller="Home" asp-action="Index" class="btn-access-home">
+            <i class="bi bi-arrow-left-circle"></i> Back to Home
+        </a>
+
+        <!-- Optional footer note -->
+        <div class="footer-note">
+            Need help? <a href="#">Contact support</a>
+        </div>
+    </div>
+</div>

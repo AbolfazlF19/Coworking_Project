@@ -1,0 +1,816 @@
+@model CoworkingSpace.Web.Models.Space
+@{
+    ViewData["Title"] = "New Space";
+}
+
+<style>
+    .space-create-wrapper {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        padding: 1.5rem;
+    }
+
+    .space-create-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 2.5rem;
+        padding: 2.5rem 2rem;
+        max-width: 850px;
+        width: 100%;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .space-create-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.25);
+        }
+
+    .space-create-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(145deg, #dbeafe, #bfdbfe);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.2rem;
+        box-shadow: 0 12px 28px -10px rgba(37, 99, 235, 0.25);
+    }
+
+        .space-create-icon i {
+            font-size: 2.8rem;
+            color: #2563eb;
+            text-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+    .space-create-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        color: #0f172a;
+        text-align: center;
+        margin-bottom: 0.25rem;
+    }
+
+    .space-create-sub {
+        text-align: center;
+        color: #64748b;
+        font-size: 0.95rem;
+        margin-bottom: 1.8rem;
+    }
+
+    .form-floating-custom {
+        margin-bottom: 1.25rem;
+    }
+
+        .form-floating-custom label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #334155;
+            margin-bottom: 0.35rem;
+            display: block;
+        }
+
+        .form-floating-custom .form-control,
+        .form-floating-custom .form-select {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1.5px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 0.7rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.25s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            width: 100%;
+        }
+
+            .form-floating-custom .form-control:focus,
+            .form-floating-custom .form-select:focus {
+                border-color: #3b82f6;
+                box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15), inset 0 2px 4px rgba(0,0,0,0.02);
+                background: #ffffff;
+            }
+
+        .form-floating-custom .text-danger {
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            display: block;
+        }
+
+    .form-row-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 1.25rem;
+    }
+
+    .form-row-grid-2-1 {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 0 1.25rem;
+    }
+
+    .form-check-custom {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.25rem;
+    }
+
+        .form-check-custom input[type="checkbox"] {
+            width: 1.1rem;
+            height: 1.1rem;
+            accent-color: #2563eb;
+            border-radius: 0.3rem;
+            cursor: pointer;
+            border: 1.5px solid #cbd5e1;
+        }
+
+            .form-check-custom input[type="checkbox"]:checked {
+                border-color: #2563eb;
+            }
+
+        .form-check-custom label {
+            font-weight: 500;
+            color: #1e293b;
+            cursor: pointer;
+            user-select: none;
+            font-size: 0.95rem;
+        }
+
+    /* ===== Image Upload Section ===== */
+    .image-upload-section {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 1.2rem;
+        padding: 1.5rem;
+        border: 2px dashed #cbd5e1;
+        margin-bottom: 1.25rem;
+        transition: border-color 0.3s, background 0.3s;
+    }
+
+        .image-upload-section.drag-over {
+            border-color: #2563eb;
+            background: rgba(37, 99, 235, 0.04);
+        }
+
+    .image-upload-label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem 0;
+        cursor: pointer;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+        .image-upload-label i {
+            font-size: 2.5rem;
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+        }
+
+        .image-upload-label:hover {
+            color: #2563eb;
+        }
+
+            .image-upload-label:hover i {
+                color: #2563eb;
+            }
+
+        .image-upload-label input[type="file"] {
+            display: none;
+        }
+
+        .image-upload-label .file-hint {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-top: 0.3rem;
+        }
+
+    /* ===== Image Preview Grid ===== */
+    .image-preview-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+
+    .image-preview-item {
+        position: relative;
+        background: #f8fafc;
+        border-radius: 0.8rem;
+        overflow: hidden;
+        border: 2px solid #e2e8f0;
+        transition: border-color 0.2s, transform 0.2s;
+        cursor: grab;
+        aspect-ratio: 1 / 1;
+    }
+
+        .image-preview-item:hover {
+            border-color: #94a3b8;
+        }
+
+        .image-preview-item.dragging {
+            opacity: 0.5;
+            transform: scale(0.95);
+        }
+
+        .image-preview-item.drag-over-item {
+            border-color: #2563eb;
+            transform: scale(1.02);
+        }
+
+        .image-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .image-preview-item .image-actions {
+            position: absolute;
+            top: 0.3rem;
+            right: 0.3rem;
+            display: flex;
+            gap: 0.2rem;
+        }
+
+            .image-preview-item .image-actions button {
+                background: rgba(0, 0, 0, 0.5);
+                backdrop-filter: blur(4px);
+                border: none;
+                color: #fff;
+                width: 26px;
+                height: 26px;
+                border-radius: 50%;
+                font-size: 0.75rem;
+                cursor: pointer;
+                transition: background 0.2s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+                .image-preview-item .image-actions button:hover {
+                    background: rgba(0, 0, 0, 0.8);
+                }
+
+            .image-preview-item .image-actions .btn-remove:hover {
+                background: #dc2626;
+            }
+
+            .image-preview-item .image-actions .btn-primary-toggle {
+                background: rgba(37, 99, 235, 0.7);
+            }
+
+                .image-preview-item .image-actions .btn-primary-toggle:hover {
+                    background: rgba(37, 99, 235, 0.9);
+                }
+
+                .image-preview-item .image-actions .btn-primary-toggle.is-primary {
+                    background: #2563eb;
+                }
+
+        .image-preview-item .image-order-number {
+            position: absolute;
+            bottom: 0.3rem;
+            left: 0.3rem;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.1rem 0.5rem;
+            border-radius: 20px;
+        }
+
+        .image-preview-item .primary-badge {
+            position: absolute;
+            top: 0.3rem;
+            left: 0.3rem;
+            background: #2563eb;
+            color: #fff;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 0.1rem 0.5rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .image-preview-item.drag-over-item {
+            border-color: #2563eb;
+        }
+
+    .image-preview-empty {
+        text-align: center;
+        padding: 1rem 0;
+        color: #94a3b8;
+        font-size: 0.9rem;
+    }
+
+    /* ===== Form Actions ===== */
+    .form-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-top: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-create-space {
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        border: none;
+        padding: 0.7rem 2rem;
+        border-radius: 60px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #fff;
+        transition: all 0.25s ease;
+        box-shadow: 0 8px 20px -6px rgba(37, 99, 235, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        cursor: pointer;
+    }
+
+        .btn-create-space:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px -8px rgba(37, 99, 235, 0.4);
+            color: #fff;
+        }
+
+        .btn-create-space i {
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+        }
+
+        .btn-create-space:hover i {
+            transform: scale(1.1);
+        }
+
+    .btn-cancel {
+        background: transparent;
+        border: 1.5px solid #e2e8f0;
+        padding: 0.7rem 1.5rem;
+        border-radius: 60px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #475569;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+        .btn-cancel:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+            color: #0f172a;
+            text-decoration: none;
+        }
+
+    .validation-summary-errors ul {
+        padding-left: 0;
+        list-style: none;
+        margin-bottom: 0.75rem;
+    }
+
+    .validation-summary-errors li {
+        background: #fee2e2;
+        color: #b91c1c;
+        border-radius: 0.75rem;
+        padding: 0.4rem 0.9rem;
+        font-size: 0.85rem;
+        margin-bottom: 0.3rem;
+        border-left: 4px solid #dc2626;
+    }
+
+    /* Responsive */
+    @@media (max-width: 576px) {
+        .space-create-card {
+            padding: 1.8rem 1.2rem;
+        }
+
+        .space-create-icon {
+            width: 65px;
+            height: 65px;
+        }
+
+            .space-create-icon i {
+                font-size: 2.2rem;
+            }
+
+        .space-create-title {
+            font-size: 1.5rem;
+        }
+
+        .form-row-grid,
+        .form-row-grid-2-1 {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+
+        .form-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-create-space,
+        .btn-cancel {
+            justify-content: center;
+        }
+
+        .image-preview-grid {
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 0.5rem;
+        }
+    }
+</style>
+
+<div class="space-create-wrapper">
+    <div class="space-create-card">
+        <div class="space-create-icon">
+            <i class="bi bi-door-open"></i>
+        </div>
+
+        <h1 class="space-create-title">New Space</h1>
+        <p class="space-create-sub">Add a new workspace to your co-working environment</p>
+
+        <form asp-action="Create" method="post" enctype="multipart/form-data" id="spaceForm">
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors text-danger"></div>
+
+            
+
+
+            <!-- ===== Basic Info ===== -->
+            <div class="form-row-grid">
+                <div class="form-floating-custom">
+                    <label asp-for="SpaceName" class="form-label"></label>
+                    <input asp-for="SpaceName" class="form-control" placeholder="e.g. Meeting Room A" />
+                    <span asp-validation-for="SpaceName" class="text-danger"></span>
+                </div>
+                <div class="form-floating-custom">
+                    <label asp-for="SpaceType" class="form-label"></label>
+                    <select asp-for="SpaceType" asp-items="Html.GetEnumSelectList<SpaceType>()" class="form-select"></select>
+                    <span asp-validation-for="SpaceType" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-row-grid-2-1">
+                <div class="form-floating-custom">
+                    <label asp-for="Location" class="form-label"></label>
+                    <input asp-for="Location" class="form-control" placeholder="Building, floor, etc." />
+                    <span asp-validation-for="Location" class="text-danger"></span>
+                </div>
+                <div class="form-floating-custom">
+                    <label asp-for="Capacity" class="form-label"></label>
+                    <input asp-for="Capacity" class="form-control" type="number" min="1" placeholder="e.g. 10" />
+                    <span asp-validation-for="Capacity" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-floating-custom">
+                <div class="form-check-custom">
+                    <input asp-for="IsActive" class="form-check-input" />
+                    <label asp-for="IsActive" class="form-check-label"></label>
+                </div>
+            </div>
+
+            <!-- ===== Image Upload Section ===== -->
+            <div class="image-upload-section" id="dropZone">
+                <label class="image-upload-label" for="imageInput">
+                    <i class="bi bi-cloud-upload"></i>
+                    <span>Click to select images or drag & drop</span>
+                    <span class="file-hint">Supported: JPG, PNG, WebP (max 5MB each)</span>
+                    <input type="file" id="imageInput" name="imageFiles" multiple accept="image/jpeg,image/png,image/webp" style="display:none;">
+                </label>
+
+                <!-- Preview Grid -->
+                <div class="image-preview-grid" id="previewGrid">
+                    <div class="image-preview-empty" id="emptyPreview">
+                        <i class="bi bi-image" style="font-size:1.5rem;display:block;margin-bottom:0.3rem;"></i>
+                        No images uploaded yet
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hidden field to store image order and primary info -->
+            <input type="hidden" name="imageData" id="imageData" value="" />
+
+            <!-- ===== Form Actions ===== -->
+            <div class="form-actions">
+                <button type="submit" class="btn-create-space">
+                    <i class="bi bi-plus-circle"></i> Create Space
+                </button>
+                <a asp-action="Index" class="btn-cancel">
+                    <i class="bi bi-x-circle"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        (function () {
+            'use strict';
+
+            // ============================================================
+            // DOM References
+            // ============================================================
+            var dropZone = document.getElementById('dropZone');
+            var fileInput = document.getElementById('imageInput');
+            var previewGrid = document.getElementById('previewGrid');
+            var emptyPreview = document.getElementById('emptyPreview');
+            var imageDataInput = document.getElementById('imageData');
+
+            var fileList = []; // Array of { file, id, isPrimary, order }
+
+            // ============================================================
+            // Drag & Drop Support
+            // ============================================================
+            dropZone.addEventListener('dragover', function (e) {
+                e.preventDefault();
+                dropZone.classList.add('drag-over');
+            });
+
+            dropZone.addEventListener('dragleave', function (e) {
+                e.preventDefault();
+                dropZone.classList.remove('drag-over');
+            });
+
+            dropZone.addEventListener('drop', function (e) {
+                e.preventDefault();
+                dropZone.classList.remove('drag-over');
+                if (e.dataTransfer.files.length > 0) {
+                    fileInput.files = e.dataTransfer.files;
+                    handleFiles(e.dataTransfer.files);
+                }
+            });
+
+            fileInput.addEventListener('change', function () {
+                if (this.files.length > 0) {
+                    handleFiles(this.files);
+                }
+            });
+
+            // ============================================================
+            // Handle file selection
+            // ============================================================
+            function handleFiles(files) {
+                var validFiles = [];
+                var allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+                var maxSize = 5 * 1024 * 1024; // 5MB
+
+                Array.from(files).forEach(function (file) {
+                    if (!allowedTypes.includes(file.type)) {
+                        alert('Invalid file type: ' + file.name + '. Only JPG, PNG, and WebP are allowed.');
+                        return;
+                    }
+                    if (file.size > maxSize) {
+                        alert('File too large: ' + file.name + '. Maximum size is 5MB.');
+                        return;
+                    }
+                    validFiles.push(file);
+                });
+
+                if (validFiles.length === 0) return;
+
+                // Add to file list
+                var startIndex = fileList.length;
+                validFiles.forEach(function (file, i) {
+                    fileList.push({
+                        file: file,
+                        id: 'img_' + Date.now() + '_' + i,
+                        isPrimary: (fileList.length === 0 && i === 0), // first image becomes primary
+                        order: startIndex + i
+                    });
+                });
+
+                // Rebuild preview
+                rebuildPreview();
+
+            }
+
+            // ============================================================
+            // Render preview grid
+            // ============================================================
+            function rebuildPreview() {
+                // Clear grid (keep empty placeholder)
+                var items = previewGrid.querySelectorAll('.image-preview-item');
+                items.forEach(function (el) { el.remove(); });
+
+                if (fileList.length === 0) {
+                    emptyPreview.style.display = 'block';
+                    return;
+                }
+                emptyPreview.style.display = 'none';
+
+                // Sort by order
+                var sorted = fileList.slice().sort(function (a, b) { return a.order - b.order; });
+
+                sorted.forEach(function (item, index) {
+                    var div = document.createElement('div');
+                    div.className = 'image-preview-item';
+                    div.dataset.id = item.id;
+                    div.dataset.index = index;
+                    div.draggable = true;
+
+                    // Image
+                    var img = document.createElement('img');
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(item.file);
+                    div.appendChild(img);
+
+                    // Primary badge
+                    if (item.isPrimary) {
+                        var badge = document.createElement('div');
+                        badge.className = 'primary-badge';
+                        badge.textContent = 'Primary';
+                        div.appendChild(badge);
+                    }
+
+                    // Order number
+                    var orderNum = document.createElement('div');
+                    orderNum.className = 'image-order-number';
+                    orderNum.textContent = '#' + (index + 1);
+                    div.appendChild(orderNum);
+
+                    // Action buttons
+                    var actions = document.createElement('div');
+                    actions.className = 'image-actions';
+
+                    // Primary toggle button
+                    var primaryBtn = document.createElement('button');
+                    primaryBtn.className = 'btn-primary-toggle' + (item.isPrimary ? ' is-primary' : '');
+                    primaryBtn.innerHTML = '<i class="bi bi-star' + (item.isPrimary ? '-fill' : '') + '"></i>';
+                    primaryBtn.title = item.isPrimary ? 'Primary image' : 'Set as primary';
+                    primaryBtn.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        setPrimary(item.id);
+                    });
+                    actions.appendChild(primaryBtn);
+
+                    // Remove button
+                    var removeBtn = document.createElement('button');
+                    removeBtn.className = 'btn-remove';
+                    removeBtn.innerHTML = '<i class="bi bi-x"></i>';
+                    removeBtn.title = 'Remove image';
+                    removeBtn.addEventListener('click', function (e) {
+                        e.stopPropagation();
+                        removeImage(item.id);
+                    });
+                    actions.appendChild(removeBtn);
+
+                    div.appendChild(actions);
+
+                    // Drag events
+                    div.addEventListener('dragstart', function (e) {
+                        e.dataTransfer.setData('text/plain', item.id);
+                        this.classList.add('dragging');
+                    });
+
+                    div.addEventListener('dragend', function (e) {
+                        this.classList.remove('dragging');
+                    });
+
+                    div.addEventListener('dragover', function (e) {
+                        e.preventDefault();
+                        this.classList.add('drag-over-item');
+                    });
+
+                    div.addEventListener('dragleave', function (e) {
+                        this.classList.remove('drag-over-item');
+                    });
+
+                    div.addEventListener('drop', function (e) {
+                        e.preventDefault();
+                        this.classList.remove('drag-over-item');
+                        var draggedId = e.dataTransfer.getData('text/plain');
+                        if (draggedId && draggedId !== item.id) {
+                            swapOrder(draggedId, item.id);
+                        }
+                    });
+
+                    previewGrid.appendChild(div);
+                });
+
+                updateHiddenField();
+            }
+
+            // ============================================================
+            // Set primary image
+            // ============================================================
+            function setPrimary(id) {
+                fileList.forEach(function (item) {
+                    item.isPrimary = (item.id === id);
+                });
+                rebuildPreview();
+            }
+
+            // ============================================================
+            // Remove image
+            // ============================================================
+            function removeImage(id) {
+                fileList = fileList.filter(function (item) { return item.id !== id; });
+                // Reorder
+                fileList.forEach(function (item, index) {
+                    item.order = index;
+                });
+                rebuildPreview();
+            }
+
+            // ============================================================
+            // Swap order (drag & drop)
+            // ============================================================
+            function swapOrder(draggedId, targetId) {
+                var draggedItem = fileList.find(function (i) { return i.id === draggedId; });
+                var targetItem = fileList.find(function (i) { return i.id === targetId; });
+                if (!draggedItem || !targetItem) return;
+
+                var draggedOrder = draggedItem.order;
+                draggedItem.order = targetItem.order;
+                targetItem.order = draggedOrder;
+
+                // Sort by order
+                fileList.sort(function (a, b) { return a.order - b.order; });
+                // Normalize orders
+                fileList.forEach(function (item, index) {
+                    item.order = index;
+                });
+
+                rebuildPreview();
+            }
+
+            // ============================================================
+            // Update hidden field with image data for server
+            // ============================================================
+            function updateHiddenField() {
+                var data = fileList.map(function (item) {
+                    return {
+                        id: item.id,
+                        fileName: item.file.name,
+                        fileSize: item.file.size,
+                        fileType: item.file.type,
+                        isPrimary: item.isPrimary,
+                        order: item.order
+                    };
+                });
+                imageDataInput.value = JSON.stringify(data);
+            }
+
+            // ============================================================
+            // Form submit: ensure at least one image
+            // ============================================================
+            document.getElementById('spaceForm').addEventListener('submit', function (e) {
+                if (fileList.length === 0) {
+                    e.preventDefault();
+                    alert('Please upload at least one image for the space.');
+                    return;
+                }
+
+                // Ensure there's exactly one primary image
+                var primaryCount = fileList.filter(function (i) { return i.isPrimary; }).length;
+                if (primaryCount === 0) {
+                    // Auto-set first image as primary
+                    if (fileList.length > 0) {
+                        fileList[0].isPrimary = true;
+                        rebuildPreview();
+                    }
+                } else if (primaryCount > 1) {
+                    // Keep only the first primary, unset others
+                    var foundFirst = false;
+                    fileList.forEach(function (item) {
+                        if (item.isPrimary) {
+                            if (!foundFirst) {
+                                foundFirst = true;
+                            } else {
+                                item.isPrimary = false;
+                            }
+                        }
+                    });
+                    rebuildPreview();
+                }
+
+                updateHiddenField();
+            });
+
+            // ============================================================
+            // Initial setup: if there's a pre-selected space (from edit), load images
+            // For Create, it's empty, so nothing to do.
+            // ============================================================
+        })();
+    </script>
+}

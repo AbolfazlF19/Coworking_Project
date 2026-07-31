@@ -1,0 +1,247 @@
+﻿@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<style>
+    .error-wrapper {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        padding: 1.5rem;
+    }
+
+    .error-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-radius: 2.5rem;
+        padding: 3rem 2.5rem;
+        max-width: 600px;
+        width: 100%;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: center;
+    }
+
+        .error-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.25);
+        }
+
+    .error-icon {
+        width: 90px;
+        height: 90px;
+        background: linear-gradient(145deg, #fee2e2, #fecaca);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        box-shadow: 0 12px 30px -8px rgba(220, 38, 38, 0.25);
+        animation: pulse-glow 2s infinite alternate;
+    }
+
+        .error-icon i {
+            font-size: 3.5rem;
+            color: #dc2626;
+            text-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+    @@keyframes pulse-glow {
+        0% {
+            box-shadow: 0 12px 30px -8px rgba(220, 38, 38, 0.15);
+        }
+
+        100% {
+            box-shadow: 0 12px 45px 4px rgba(220, 38, 38, 0.35);
+        }
+    }
+
+    .error-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        color: #0f172a;
+        margin-bottom: 0.5rem;
+    }
+
+        .error-title span {
+            color: #dc2626;
+        }
+
+    .error-sub {
+        font-size: 1.05rem;
+        color: #475569;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+
+    .error-details {
+        background: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(6px);
+        border-radius: 1.2rem;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        font-size: 0.95rem;
+        text-align: left;
+    }
+
+        .error-details strong {
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        .error-details code {
+            background: rgba(0, 0, 0, 0.04);
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            color: #1e293b;
+            word-break: break-all;
+        }
+
+    .error-dev-mode {
+        background: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(6px);
+        border-radius: 1.2rem;
+        padding: 1.2rem 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        text-align: left;
+        font-size: 0.9rem;
+        color: #475569;
+        margin-top: 1rem;
+    }
+
+        .error-dev-mode h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+            .error-dev-mode h4 i {
+                color: #f59e0b;
+            }
+
+        .error-dev-mode p {
+            margin-bottom: 0.4rem;
+            line-height: 1.5;
+        }
+
+        .error-dev-mode strong {
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+    .btn-home {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-top: 1.5rem;
+        background: linear-gradient(135deg, #1e293b, #0f172a);
+        border: none;
+        padding: 0.7rem 2.2rem;
+        border-radius: 60px;
+        font-weight: 700;
+        font-size: 1rem;
+        color: #fff;
+        transition: all 0.25s ease;
+        box-shadow: 0 8px 20px -6px rgba(15, 23, 42, 0.3);
+        text-decoration: none;
+    }
+
+        .btn-home:hover {
+            background: linear-gradient(135deg, #0f172a, #020617);
+            transform: translateY(-3px);
+            box-shadow: 0 14px 28px -8px rgba(15, 23, 42, 0.4);
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .btn-home i {
+            font-size: 1.2rem;
+            transition: transform 0.2s;
+        }
+
+        .btn-home:hover i {
+            transform: translateX(4px);
+        }
+
+    /* Responsive */
+    @@media (max-width: 576px) {
+        .error-card {
+            padding: 2rem 1.2rem;
+        }
+
+        .error-icon {
+            width: 70px;
+            height: 70px;
+        }
+
+            .error-icon i {
+                font-size: 2.8rem;
+            }
+
+        .error-title {
+            font-size: 2rem;
+        }
+
+        .error-sub {
+            font-size: 0.9rem;
+        }
+
+        .error-details,
+        .error-dev-mode {
+            padding: 0.8rem 1rem;
+            font-size: 0.8rem;
+        }
+    }
+</style>
+
+<div class="error-wrapper">
+    <div class="error-card">
+        <!-- Icon -->
+        <div class="error-icon">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+        </div>
+
+        <!-- Title -->
+        <h1 class="error-title">Error <span>!</span></h1>
+        <p class="error-sub">An error occurred while processing your request.</p>
+
+        <!-- Request ID (if available) -->
+        @if (Model.ShowRequestId)
+        {
+            <div class="error-details">
+                <strong>Request ID:</strong> <code>@Model.RequestId</code>
+            </div>
+        }
+
+        <!-- Development Mode Info -->
+        <div class="error-dev-mode">
+            <h4><i class="bi bi-info-circle"></i> Development Mode</h4>
+            <p>
+                Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
+            </p>
+            <p class="mb-0">
+                <strong>The Development environment shouldn't be enabled for deployed applications.</strong>
+                It can result in displaying sensitive information from exceptions to end users.
+                For local debugging, enable the <strong>Development</strong> environment by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>
+                and restarting the app.
+            </p>
+        </div>
+
+        <!-- Back to Home -->
+        <a asp-controller="Home" asp-action="Index" class="btn-home">
+            <i class="bi bi-arrow-left-circle"></i> Back to Home
+        </a>
+    </div>
+</div>

@@ -1,0 +1,445 @@
+﻿@model IEnumerable<CoworkingSpace.Web.Models.Reservation>
+@{
+    ViewData["Title"] = "Reservations";
+}
+
+<style>
+    .reservations-wrapper {
+        min-height: 80vh;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        padding: 1.5rem;
+        border-radius: 0;
+    }
+
+    .reservations-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+        .reservations-header h3 {
+            font-weight: 800;
+            font-size: 1.8rem;
+            letter-spacing: -0.025em;
+            color: #0f172a;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+            .reservations-header h3 i {
+                color: #2563eb;
+            }
+
+    .btn-new {
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        border: none;
+        padding: 0.6rem 1.5rem;
+        border-radius: 60px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: #fff;
+        transition: all 0.25s ease;
+        box-shadow: 0 8px 20px -6px rgba(37, 99, 235, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+    }
+
+        .btn-new:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px -8px rgba(37, 99, 235, 0.4);
+            color: #fff;
+            text-decoration: none;
+        }
+
+    .table-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-radius: 2rem;
+        box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .table-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.12);
+        }
+
+        .table-card .table {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+
+            .table-card .table thead th {
+                background: #f8fafc;
+                color: #475569;
+                font-weight: 700;
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                letter-spacing: 0.03em;
+                padding: 0.9rem 1rem;
+                border-bottom: 1px solid #e2e8f0;
+            }
+
+            .table-card .table tbody td {
+                padding: 0.8rem 1rem;
+                vertical-align: middle;
+                border-bottom: 1px solid #f1f5f9;
+                color: #1e293b;
+            }
+
+            .table-card .table tbody tr:hover {
+                background: rgba(241, 245, 249, 0.6);
+                transition: background 0.15s;
+            }
+
+            .table-card .table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+    /* ===== Space Thumbnail ===== */
+    .space-thumbnail {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+        .space-thumbnail .thumb-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 0.75rem;
+            object-fit: cover;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            flex-shrink: 0;
+        }
+
+        .space-thumbnail .thumb-placeholder {
+            width: 50px;
+            height: 50px;
+            border-radius: 0.75rem;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .space-thumbnail .space-name {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 0.9rem;
+        }
+
+    /* ===== Status Badge ===== */
+    .status-badge {
+        padding: 0.2rem 0.8rem;
+        border-radius: 60px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: inline-block;
+        text-transform: capitalize;
+    }
+
+        .status-badge.pending {
+            background: rgba(217, 119, 6, 0.1);
+            color: #b45309;
+            border: 1px solid rgba(217, 119, 6, 0.15);
+        }
+
+        .status-badge.confirmed {
+            background: rgba(59, 130, 246, 0.1);
+            color: #2563eb;
+            border: 1px solid rgba(59, 130, 246, 0.15);
+        }
+
+        .status-badge.completed {
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.15);
+        }
+
+        .status-badge.cancelled {
+            background: rgba(220, 38, 38, 0.08);
+            color: #b91c1c;
+            border: 1px solid rgba(220, 38, 38, 0.12);
+        }
+
+    /* ===== Action Buttons ===== */
+    .action-btns {
+        display: flex;
+        gap: 0.4rem;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+
+    .btn-action {
+        padding: 0.3rem 0.9rem;
+        border-radius: 60px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        border: 1.5px solid transparent;
+    }
+
+        .btn-action i {
+            font-size: 0.85rem;
+        }
+
+    .btn-action-view {
+        background: rgba(255, 255, 255, 0.6);
+        border-color: #e2e8f0;
+        color: #475569;
+    }
+
+        .btn-action-view:hover {
+            background: #ffffff;
+            border-color: #94a3b8;
+            color: #0f172a;
+            text-decoration: none;
+        }
+
+    .btn-action-edit {
+        background: rgba(37, 99, 235, 0.1);
+        border-color: #93c5fd;
+        color: #2563eb;
+    }
+
+        .btn-action-edit:hover {
+            background: rgba(37, 99, 235, 0.2);
+            border-color: #2563eb;
+            color: #1d4ed8;
+            text-decoration: none;
+        }
+
+    .btn-action-delete {
+        background: rgba(220, 38, 38, 0.08);
+        border-color: #fca5a5;
+        color: #dc2626;
+    }
+
+        .btn-action-delete:hover {
+            background: rgba(220, 38, 38, 0.15);
+            border-color: #ef4444;
+            color: #b91c1c;
+            text-decoration: none;
+        }
+
+    .btn-action-cancel {
+        background: rgba(217, 119, 6, 0.08);
+        border-color: #fcd34d;
+        color: #b45309;
+    }
+
+        .btn-action-cancel:hover {
+            background: rgba(217, 119, 6, 0.15);
+            border-color: #f59e0b;
+            color: #92400e;
+            text-decoration: none;
+        }
+
+    /* ===== Empty State ===== */
+    .empty-state {
+        padding: 3rem 1.5rem;
+        text-align: center;
+        color: #94a3b8;
+    }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 0.75rem;
+            display: block;
+            opacity: 0.4;
+        }
+
+        .empty-state .empty-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 0.25rem;
+        }
+
+    /* ===== Responsive ===== */
+    @@media (max-width: 768px) {
+        .reservations-wrapper {
+            padding: 0.75rem;
+        }
+
+        .reservations-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .action-btns {
+            justify-content: flex-start;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .table-card .table {
+            font-size: 0.8rem;
+        }
+
+            .table-card .table thead th, .table-card .table tbody td {
+                padding: 0.5rem 0.6rem;
+            }
+
+        .btn-action {
+            padding: 0.2rem 0.6rem;
+            font-size: 0.65rem;
+        }
+
+        .action-btns {
+            gap: 0.2rem;
+        }
+
+        .status-badge {
+            font-size: 0.65rem;
+            padding: 0.1rem 0.5rem;
+        }
+
+        .space-thumbnail .thumb-img,
+        .space-thumbnail .thumb-placeholder {
+            width: 36px;
+            height: 36px;
+        }
+
+        .space-thumbnail .space-name {
+            font-size: 0.75rem;
+        }
+    }
+</style>
+
+<div class="reservations-wrapper">
+    <!-- Header -->
+    <div class="reservations-header">
+        <h3>
+            <i class="bi bi-calendar-check"></i>
+            Reservations
+        </h3>
+        @if (User.IsInRole("Member") || User.IsInRole("Admin") || User.IsInRole("Staff"))
+        {
+            <a asp-action="Create" class="btn-new">
+                <i class="bi bi-plus-lg"></i> New Reservation
+            </a>
+        }
+    </div>
+
+    <!-- Table Card -->
+    <div class="table-card">
+        <div class="card-body p-0">
+            @if (!Model.Any())
+            {
+                <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <div class="empty-title">No reservations found</div>
+                    <span class="text-muted">Book your first space now.</span>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Space</th>
+                                <th>Member</th>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                // پیدا کردن تصویر اصلی یا اولین تصویر فضای رزروشده
+                                var primaryImage = item.Space?.Images?.FirstOrDefault(i => i.IsPrimary)?.ImagePath
+                                                   ?? item.Space?.Images?.FirstOrDefault()?.ImagePath;
+
+                                var statusClass = item.ReservationStatus.ToString().ToLower();
+                                <tr>
+                                    <td>
+                                        <div class="space-thumbnail">
+                                            @if (!string.IsNullOrEmpty(primaryImage))
+                                            {
+                                                <img class="thumb-img" src="@primaryImage" alt="@item.Space?.SpaceName" loading="lazy" />
+                                            }
+                                            else
+                                            {
+                                                <div class="thumb-placeholder">
+                                                    <i class="bi bi-image"></i>
+                                                </div>
+                                            }
+                                            <span class="space-name">@item.Space?.SpaceName</span>
+                                        </div>
+                                    </td>
+                                    <td>@item.Member?.FullName</td>
+                                    <td>@item.StartTime.ToString("yyyy/MM/dd HH:mm")</td>
+                                    <td>@item.EndTime.ToString("yyyy/MM/dd HH:mm")</td>
+                                    <td>@item.TotalAmount.ToString("C")</td>
+                                    <td><span class="status-badge @statusClass">@item.ReservationStatus.ToSpacedString()</span></td>
+                                    <td class="text-end">
+                                        <div class="action-btns">
+                                            <a asp-action="Details" asp-route-id="@item.ReservationId" class="btn-action btn-action-view" title="View">
+                                                <i class="bi bi-eye"></i> View
+                                            </a>
+
+                                            @if (User.IsInRole("Admin"))
+                                            {
+                                                <a asp-action="Edit" asp-route-id="@item.ReservationId" class="btn-action btn-action-edit" title="Edit">
+                                                    <i class="bi bi-pencil"></i> Edit
+                                                </a>
+                                                <a asp-action="Delete" asp-route-id="@item.ReservationId" class="btn-action btn-action-delete" title="Delete">
+                                                    <i class="bi bi-trash"></i> Delete
+                                                </a>
+                                            }
+
+                                            @if (User.IsInRole("Member") && item.ReservationStatus == ReservationStatus.Pending)
+                                            {
+                                                var timeUntilStart = item.StartTime - DateTime.Now;
+                                                if (timeUntilStart.TotalHours >= 24)
+                                                {
+                                                    <form asp-action="Cancel" method="post" style="display:inline;">
+                                                        <input type="hidden" name="id" value="@item.ReservationId" />
+                                                        <button type="submit" class="btn-action btn-action-cancel" title="Cancel">
+                                                            <i class="bi bi-x-circle"></i> Cancel
+                                                        </button>
+                                                    </form>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted small" title="Cancellation not allowed within 24 hours of start time">
+                                                        <i class="bi bi-clock"></i> Cannot cancel
+                                                    </span>
+                                                }
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>

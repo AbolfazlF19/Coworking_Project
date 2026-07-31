@@ -1,0 +1,353 @@
+@model CoworkingSpace.Web.Models.Space
+@{
+    ViewData["Title"] = "Delete Space";
+}
+
+<style>
+    .delete-space-wrapper {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        padding: 1.5rem;
+    }
+
+    .delete-space-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 2.5rem;
+        padding: 2.5rem 2rem;
+        max-width: 580px;
+        width: 100%;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: center;
+    }
+
+        .delete-space-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.25);
+        }
+
+    .delete-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(145deg, #fee2e2, #fecaca);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.2rem;
+        box-shadow: 0 12px 28px -10px rgba(220, 38, 38, 0.25);
+        animation: pulse-glow 2s infinite alternate;
+    }
+
+        .delete-icon i {
+            font-size: 2.8rem;
+            color: #dc2626;
+            text-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+    @@keyframes pulse-glow {
+        0% {
+            box-shadow: 0 12px 28px -10px rgba(220, 38, 38, 0.15);
+        }
+
+        100% {
+            box-shadow: 0 12px 45px 4px rgba(220, 38, 38, 0.35);
+        }
+    }
+
+    .delete-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        color: #0f172a;
+        margin-bottom: 0.5rem;
+    }
+
+        .delete-title span {
+            color: #dc2626;
+        }
+
+    .delete-message {
+        font-size: 1.05rem;
+        color: #475569;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+
+        .delete-message strong {
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+    .alert-warning-custom {
+        background: rgba(254, 243, 199, 0.85);
+        backdrop-filter: blur(6px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-left: 6px solid #f59e0b;
+        border-radius: 1.2rem;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.8rem;
+        text-align: left;
+        color: #92400e;
+        font-size: 0.95rem;
+    }
+
+        .alert-warning-custom i {
+            font-size: 1.4rem;
+            color: #f59e0b;
+            margin-right: 0.5rem;
+            float: left;
+        }
+
+        .alert-warning-custom strong {
+            display: block;
+            font-size: 1.05rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .alert-warning-custom p {
+            margin-bottom: 0;
+            padding-left: 2rem;
+            font-weight: 500;
+        }
+
+        .alert-warning-custom ul {
+            padding-left: 2.5rem;
+            margin-top: 0.3rem;
+            margin-bottom: 0;
+            font-weight: 400;
+        }
+
+    .delete-details {
+        background: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(6px);
+        border-radius: 1.2rem;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.8rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        text-align: left;
+        font-size: 0.95rem;
+    }
+
+        .delete-details dl {
+            margin-bottom: 0;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 0.25rem 0.5rem;
+        }
+
+        .delete-details dt {
+            font-weight: 600;
+            color: #475569;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            padding: 0.3rem 0;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+        }
+
+        .delete-details dd {
+            font-weight: 500;
+            color: #0f172a;
+            padding: 0.3rem 0;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+            margin-bottom: 0;
+        }
+
+            .delete-details dt:last-of-type,
+            .delete-details dd:last-of-type {
+                border-bottom: none;
+            }
+
+    .form-actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-delete {
+        background: linear-gradient(135deg, #dc2626, #b91c1c);
+        border: none;
+        padding: 0.7rem 2rem;
+        border-radius: 60px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #fff;
+        transition: all 0.25s ease;
+        box-shadow: 0 8px 20px -6px rgba(220, 38, 38, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        cursor: pointer;
+    }
+
+        .btn-delete:hover:not(:disabled) {
+            background: linear-gradient(135deg, #b91c1c, #991b1b);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px -8px rgba(220, 38, 38, 0.4);
+            color: #fff;
+        }
+
+        .btn-delete:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .btn-delete i {
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+        }
+
+        .btn-delete:hover:not(:disabled) i {
+            transform: scale(1.1);
+        }
+
+    .btn-cancel {
+        background: transparent;
+        border: 1.5px solid #e2e8f0;
+        padding: 0.7rem 1.5rem;
+        border-radius: 60px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #475569;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+        .btn-cancel:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+            color: #0f172a;
+            text-decoration: none;
+        }
+
+    @@media (max-width: 576px) {
+        .delete-space-card {
+            padding: 1.8rem 1.2rem;
+        }
+
+        .delete-icon {
+            width: 65px;
+            height: 65px;
+        }
+
+            .delete-icon i {
+                font-size: 2.2rem;
+            }
+
+        .delete-title {
+            font-size: 1.5rem;
+        }
+
+        .delete-message {
+            font-size: 0.95rem;
+        }
+
+        .delete-details dl {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+
+        .delete-details dt {
+            border-bottom: none;
+            padding-bottom: 0.1rem;
+        }
+
+        .delete-details dd {
+            padding-top: 0;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+            margin-bottom: 0.3rem;
+        }
+
+            .delete-details dd:last-of-type {
+                border-bottom: none;
+            }
+
+        .form-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-delete,
+        .btn-cancel {
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="delete-space-wrapper">
+    <div class="delete-space-card">
+        <!-- Icon -->
+        <div class="delete-icon">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+        </div>
+
+        <h1 class="delete-title">Delete <span>Space</span></h1>
+
+        <p class="delete-message">
+            Are you sure you want to delete the space <strong>@Model.SpaceName</strong>?
+        </p>
+
+        <!-- ====== نمایش هشدار در صورت وجود هرگونه وابستگی ====== -->
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <div class="alert-warning-custom">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <strong>Cannot delete this space!</strong>
+                <p>@ViewBag.ErrorMessage</p>
+            </div>
+        }
+
+        <!-- Details -->
+        <div class="delete-details">
+            <dl>
+                <dt>Type</dt>
+                <dd>@Model.SpaceType.ToSpacedString()</dd>
+
+                <dt>Location</dt>
+                <dd>@Model.Location</dd>
+
+                <dt>Capacity</dt>
+                <dd>@Model.Capacity</dd>
+            </dl>
+        </div>
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="SpaceId" />
+
+            <div class="form-actions">
+                @if (ViewBag.ErrorMessage != null)
+                {
+                    <!-- دکمه‌ی حذف غیرفعال -->
+                    <button type="button" class="btn-delete" disabled>
+                        <i class="bi bi-trash"></i> Cannot delete (has dependencies)
+                    </button>
+                }
+                else
+                {
+                    <!-- دکمه‌ی حذف فعال -->
+                    <button type="submit" class="btn-delete">
+                        <i class="bi bi-trash"></i> Yes, delete
+                    </button>
+                }
+
+                <a asp-action="Index" class="btn-cancel">
+                    <i class="bi bi-x-circle"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

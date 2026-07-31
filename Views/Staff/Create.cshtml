@@ -1,0 +1,261 @@
+﻿@model CoworkingSpace.Web.Models.Staff
+@{
+    ViewData["Title"] = "New Staff";
+}
+
+<style>
+    .create-wrapper {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        padding: 1.5rem;
+    }
+
+    .create-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 2.5rem;
+        padding: 2.5rem 2rem;
+        max-width: 580px;
+        width: 100%;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .create-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.25);
+        }
+
+    .create-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(145deg, #dbeafe, #bfdbfe);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.2rem;
+        box-shadow: 0 12px 28px -10px rgba(37, 99, 235, 0.25);
+    }
+
+        .create-icon i {
+            font-size: 2.8rem;
+            color: #2563eb;
+            text-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+    .create-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        color: #0f172a;
+        text-align: center;
+        margin-bottom: 0.25rem;
+    }
+
+    .create-sub {
+        text-align: center;
+        color: #64748b;
+        font-size: 0.95rem;
+        margin-bottom: 1.8rem;
+    }
+
+    .form-floating-custom {
+        margin-bottom: 1.25rem;
+    }
+
+        .form-floating-custom label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #334155;
+            margin-bottom: 0.35rem;
+            display: block;
+        }
+
+        .form-floating-custom .form-control {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1.5px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 0.7rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.25s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            width: 100%;
+        }
+
+            .form-floating-custom .form-control:focus {
+                border-color: #3b82f6;
+                box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15), inset 0 2px 4px rgba(0,0,0,0.02);
+                background: #ffffff;
+            }
+
+        .form-floating-custom .text-danger {
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            display: block;
+        }
+
+    .form-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-top: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-create {
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        border: none;
+        padding: 0.7rem 2rem;
+        border-radius: 60px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #fff;
+        transition: all 0.25s ease;
+        box-shadow: 0 8px 20px -6px rgba(37, 99, 235, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        cursor: pointer;
+    }
+
+        .btn-create:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px -8px rgba(37, 99, 235, 0.4);
+            color: #fff;
+        }
+
+        .btn-create i {
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+        }
+
+        .btn-create:hover i {
+            transform: scale(1.1);
+        }
+
+    .btn-cancel {
+        background: transparent;
+        border: 1.5px solid #e2e8f0;
+        padding: 0.7rem 1.5rem;
+        border-radius: 60px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #475569;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+        .btn-cancel:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+            color: #0f172a;
+            text-decoration: none;
+        }
+
+    .validation-summary-errors ul {
+        padding-left: 0;
+        list-style: none;
+        margin-bottom: 0.75rem;
+    }
+
+    .validation-summary-errors li {
+        background: #fee2e2;
+        color: #b91c1c;
+        border-radius: 0.75rem;
+        padding: 0.4rem 0.9rem;
+        font-size: 0.85rem;
+        margin-bottom: 0.3rem;
+        border-left: 4px solid #dc2626;
+    }
+
+    @@media (max-width: 576px) {
+        .create-card {
+            padding: 1.8rem 1.2rem;
+        }
+
+        .create-icon {
+            width: 65px;
+            height: 65px;
+        }
+
+            .create-icon i {
+                font-size: 2.2rem;
+            }
+
+        .create-title {
+            font-size: 1.5rem;
+        }
+
+        .form-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-create,
+        .btn-cancel {
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="create-wrapper">
+    <div class="create-card">
+        <div class="create-icon">
+            <i class="bi bi-person-plus"></i>
+        </div>
+
+        <h1 class="create-title">New Staff</h1>
+        <p class="create-sub">Add a new staff member to your team</p>
+
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors text-danger"></div>
+
+            <div class="form-floating-custom">
+                <label asp-for="FullName" class="form-label"></label>
+                <input asp-for="FullName" class="form-control" placeholder="Full name" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating-custom">
+                <label asp-for="Role" class="form-label"></label>
+                <input asp-for="Role" class="form-control" placeholder="e.g. Manager, Cleaner, ..." />
+                <span asp-validation-for="Role" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating-custom">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" placeholder="staff@example.com" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating-custom">
+                <label asp-for="Phone" class="form-label"></label>
+                <input asp-for="Phone" class="form-control" placeholder="+1 234 567 890" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-create">
+                    <i class="bi bi-plus-circle"></i> Create
+                </button>
+                <a asp-action="Index" class="btn-cancel">
+                    <i class="bi bi-x-circle"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

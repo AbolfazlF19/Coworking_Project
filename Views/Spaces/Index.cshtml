@@ -1,0 +1,432 @@
+@model IEnumerable<CoworkingSpace.Web.Models.Space>
+@{
+    ViewData["Title"] = "Spaces";
+}
+
+<style>
+    .spaces-wrapper {
+        min-height: 80vh;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        padding: 1.5rem;
+        border-radius: 0;
+    }
+
+    .spaces-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+        .spaces-header h3 {
+            font-weight: 800;
+            font-size: 1.8rem;
+            letter-spacing: -0.025em;
+            color: #0f172a;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+            .spaces-header h3 i {
+                color: #2563eb;
+            }
+
+    .btn-new-space {
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        border: none;
+        padding: 0.6rem 1.5rem;
+        border-radius: 60px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: #fff;
+        transition: all 0.25s ease;
+        box-shadow: 0 8px 20px -6px rgba(37, 99, 235, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+    }
+
+        .btn-new-space:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px -8px rgba(37, 99, 235, 0.4);
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .btn-new-space i {
+            font-size: 1.1rem;
+        }
+
+    .spaces-table-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-radius: 2rem;
+        box-shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .spaces-table-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.12);
+        }
+
+        .spaces-table-card .table {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+        }
+
+            .spaces-table-card .table thead th {
+                background: #f8fafc;
+                color: #475569;
+                font-weight: 700;
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                letter-spacing: 0.03em;
+                padding: 0.9rem 1rem;
+                border-bottom: 1px solid #e2e8f0;
+            }
+
+            .spaces-table-card .table tbody td {
+                padding: 0.8rem 1rem;
+                vertical-align: middle;
+                border-bottom: 1px solid #f1f5f9;
+                color: #1e293b;
+            }
+
+            .spaces-table-card .table tbody tr:hover {
+                background: rgba(241, 245, 249, 0.6);
+                transition: background 0.15s;
+            }
+
+            .spaces-table-card .table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+    /* ===== Space Thumbnail ===== */
+    .space-thumbnail {
+        width: 50px;
+        height: 50px;
+        border-radius: 0.75rem;
+        object-fit: cover;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        flex-shrink: 0;
+        display: block;
+    }
+
+    .space-thumbnail-placeholder {
+        width: 50px;
+        height: 50px;
+        border-radius: 0.75rem;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #94a3b8;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .space-name-cell {
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .type-badge {
+        background: rgba(37, 99, 235, 0.08);
+        color: #2563eb;
+        padding: 0.2rem 0.8rem;
+        border-radius: 60px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: inline-block;
+        border: 1px solid rgba(37, 99, 235, 0.1);
+        text-transform: capitalize;
+    }
+
+    .status-badge {
+        padding: 0.2rem 0.8rem;
+        border-radius: 60px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+        .status-badge.active {
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.15);
+        }
+
+        .status-badge.inactive {
+            background: rgba(220, 38, 38, 0.08);
+            color: #b91c1c;
+            border: 1px solid rgba(220, 38, 38, 0.12);
+        }
+
+    .equipment-list {
+        color: #475569;
+        font-size: 0.85rem;
+    }
+
+        .equipment-list .empty {
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+    .action-btns {
+        display: flex;
+        gap: 0.4rem;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+
+    .btn-action {
+        padding: 0.3rem 0.9rem;
+        border-radius: 60px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        border: 1.5px solid transparent;
+    }
+
+        .btn-action i {
+            font-size: 0.85rem;
+        }
+
+    .btn-action-view {
+        background: rgba(255, 255, 255, 0.6);
+        border-color: #e2e8f0;
+        color: #475569;
+    }
+
+        .btn-action-view:hover {
+            background: #ffffff;
+            border-color: #94a3b8;
+            color: #0f172a;
+            text-decoration: none;
+        }
+
+    .btn-action-edit {
+        background: rgba(37, 99, 235, 0.1);
+        border-color: #93c5fd;
+        color: #2563eb;
+    }
+
+        .btn-action-edit:hover {
+            background: rgba(37, 99, 235, 0.2);
+            border-color: #2563eb;
+            color: #1d4ed8;
+            text-decoration: none;
+        }
+
+    .btn-action-delete {
+        background: rgba(220, 38, 38, 0.08);
+        border-color: #fca5a5;
+        color: #dc2626;
+    }
+
+        .btn-action-delete:hover {
+            background: rgba(220, 38, 38, 0.15);
+            border-color: #ef4444;
+            color: #b91c1c;
+            text-decoration: none;
+        }
+
+    .empty-state {
+        padding: 3rem 1.5rem;
+        text-align: center;
+        color: #94a3b8;
+    }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 0.75rem;
+            display: block;
+            opacity: 0.4;
+        }
+
+        .empty-state .empty-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 0.25rem;
+        }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .spaces-wrapper {
+            padding: 0.75rem;
+        }
+
+        .spaces-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .action-btns {
+            justify-content: flex-start;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .spaces-table-card .table {
+            font-size: 0.8rem;
+        }
+
+            .spaces-table-card .table thead th, .spaces-table-card .table tbody td {
+                padding: 0.5rem 0.6rem;
+            }
+
+        .btn-action {
+            padding: 0.2rem 0.6rem;
+            font-size: 0.65rem;
+        }
+
+        .action-btns {
+            gap: 0.2rem;
+        }
+
+        .type-badge, .status-badge {
+            font-size: 0.65rem;
+            padding: 0.1rem 0.5rem;
+        }
+
+        .equipment-list {
+            font-size: 0.75rem;
+        }
+
+        .space-thumbnail, .space-thumbnail-placeholder {
+            width: 36px;
+            height: 36px;
+        }
+
+        .space-thumbnail-placeholder {
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<div class="spaces-wrapper">
+    <!-- Header -->
+    <div class="spaces-header">
+        <h3>
+            <i class="bi bi-building"></i>
+            Spaces
+        </h3>
+        <a asp-action="Create" class="btn-new-space">
+            <i class="bi bi-plus-lg"></i> New Space
+        </a>
+    </div>
+
+    <!-- Table Card -->
+    <div class="spaces-table-card">
+        <div class="card-body p-0">
+            @if (!Model.Any())
+            {
+                <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <div class="empty-title">No spaces found</div>
+                    <span class="text-muted">Start by adding your first workspace.</span>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Capacity</th>
+                                <th>Location</th>
+                                <th>Equipment</th>
+                                <th>Status</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                // پیدا کردن تصویر اصلی یا اولین تصویر
+                                var primaryImage = item.Images?.FirstOrDefault(i => i.IsPrimary)?.ImagePath
+                                                   ?? item.Images?.FirstOrDefault()?.ImagePath;
+
+                                <tr>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(primaryImage))
+                                        {
+                                            <img class="space-thumbnail" src="@primaryImage" alt="@item.SpaceName" loading="lazy" />
+                                        }
+                                        else
+                                        {
+                                            <div class="space-thumbnail-placeholder">
+                                                <i class="bi bi-image"></i>
+                                            </div>
+                                        }
+                                    </td>
+                                    <td class="space-name-cell">@item.SpaceName</td>
+                                    <td>
+                                        <span class="type-badge">@item.SpaceType.ToSpacedString()</span>
+                                    </td>
+                                    <td>@item.Capacity</td>
+                                    <td>@item.Location</td>
+                                    <td>
+                                        <span class="equipment-list">
+                                            @if (item.SpaceEquipments != null && item.SpaceEquipments.Any())
+                                            {
+                                                @string.Join(", ", item.SpaceEquipments.Select(se => se.Equipment?.Name))
+                                            }
+                                            else
+                                            {
+                                                <span class="empty">—</span>
+                                            }
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if (item.IsActive)
+                                        {
+                                            <span class="status-badge active">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="status-badge inactive">Inactive</span>
+                                        }
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="action-btns">
+                                            <a asp-action="Details" asp-route-id="@item.SpaceId" class="btn-action btn-action-view" title="View">
+                                                <i class="bi bi-eye"></i> View
+                                            </a>
+                                            <a asp-action="Edit" asp-route-id="@item.SpaceId" class="btn-action btn-action-edit" title="Edit">
+                                                <i class="bi bi-pencil"></i> Edit
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@item.SpaceId" class="btn-action btn-action-delete" title="Delete">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>

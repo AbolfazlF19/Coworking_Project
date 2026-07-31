@@ -1,0 +1,223 @@
+@model CoworkingSpace.Web.Models.SpaceEquipment
+@{
+    ViewData["Title"] = "Remove Assignment";
+}
+
+<style>
+    .remove-wrapper {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        padding: 1.5rem;
+    }
+
+    .remove-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 2.5rem;
+        padding: 2.5rem 2rem;
+        max-width: 520px;
+        width: 100%;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: center;
+    }
+
+        .remove-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.25);
+        }
+
+    .remove-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(145deg, #fee2e2, #fecaca);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.2rem;
+        box-shadow: 0 12px 28px -10px rgba(220, 38, 38, 0.25);
+        animation: pulse-glow 2s infinite alternate;
+    }
+
+        .remove-icon i {
+            font-size: 2.8rem;
+            color: #dc2626;
+            text-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+    @@keyframes pulse-glow {
+        0% {
+            box-shadow: 0 12px 28px -10px rgba(220, 38, 38, 0.15);
+        }
+
+        100% {
+            box-shadow: 0 12px 45px 4px rgba(220, 38, 38, 0.35);
+        }
+    }
+
+    .remove-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        color: #0f172a;
+        margin-bottom: 0.5rem;
+    }
+
+        .remove-title span {
+            color: #dc2626;
+        }
+
+    .remove-message {
+        font-size: 1.05rem;
+        color: #475569;
+        line-height: 1.6;
+        margin-bottom: 1.8rem;
+    }
+
+        .remove-message strong {
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        .remove-message .equipment-name {
+            color: #4f46e5;
+        }
+
+        .remove-message .space-name {
+            color: #4f46e5;
+        }
+
+    .form-actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-remove {
+        background: linear-gradient(135deg, #dc2626, #b91c1c);
+        border: none;
+        padding: 0.7rem 2rem;
+        border-radius: 60px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #fff;
+        transition: all 0.25s ease;
+        box-shadow: 0 8px 20px -6px rgba(220, 38, 38, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        cursor: pointer;
+    }
+
+        .btn-remove:hover {
+            background: linear-gradient(135deg, #b91c1c, #991b1b);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px -8px rgba(220, 38, 38, 0.4);
+            color: #fff;
+        }
+
+        .btn-remove i {
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+        }
+
+        .btn-remove:hover i {
+            transform: scale(1.1);
+        }
+
+    .btn-cancel {
+        background: transparent;
+        border: 1.5px solid #e2e8f0;
+        padding: 0.7rem 1.5rem;
+        border-radius: 60px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #475569;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+        .btn-cancel:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+            color: #0f172a;
+            text-decoration: none;
+        }
+
+    /* Responsive */
+    @@media (max-width: 576px) {
+        .remove-card {
+            padding: 1.8rem 1.2rem;
+        }
+
+        .remove-icon {
+            width: 65px;
+            height: 65px;
+        }
+
+            .remove-icon i {
+                font-size: 2.2rem;
+            }
+
+        .remove-title {
+            font-size: 1.5rem;
+        }
+
+        .remove-message {
+            font-size: 0.95rem;
+        }
+
+        .form-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-remove,
+        .btn-cancel {
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="remove-wrapper">
+    <div class="remove-card">
+        <!-- Icon -->
+        <div class="remove-icon">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+        </div>
+
+        <h1 class="remove-title">Remove <span>Assignment</span></h1>
+
+        <p class="remove-message">
+            Are you sure you want to remove
+            <strong class="equipment-name">@Model.Equipment?.Name</strong>
+            from
+            <strong class="space-name">@Model.Space?.SpaceName</strong>?
+        </p>
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="SpaceId" />
+            <input type="hidden" asp-for="EquipmentId" />
+
+            <div class="form-actions">
+                <button type="submit" class="btn-remove">
+                    <i class="bi bi-trash"></i> Yes, remove
+                </button>
+                <a asp-action="Index" class="btn-cancel">
+                    <i class="bi bi-x-circle"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

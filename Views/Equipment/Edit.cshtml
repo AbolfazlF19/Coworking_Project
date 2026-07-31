@@ -1,0 +1,268 @@
+@model CoworkingSpace.Web.Models.Equipment
+@{
+    ViewData["Title"] = "Edit Equipment";
+}
+
+<style>
+    .edit-wrapper {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        padding: 1.5rem;
+    }
+
+    .edit-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 2.5rem;
+        padding: 2.5rem 2rem;
+        max-width: 580px;
+        width: 100%;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .edit-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.25);
+        }
+
+    .edit-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(145deg, #e0e7ff, #c7d2fe);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.2rem;
+        box-shadow: 0 12px 28px -10px rgba(99, 102, 241, 0.25);
+    }
+
+        .edit-icon i {
+            font-size: 2.8rem;
+            color: #4f46e5;
+            text-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+        }
+
+    .edit-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        color: #0f172a;
+        text-align: center;
+        margin-bottom: 0.25rem;
+    }
+
+    .edit-sub {
+        text-align: center;
+        color: #64748b;
+        font-size: 0.95rem;
+        margin-bottom: 1.8rem;
+    }
+
+    .form-floating-custom {
+        margin-bottom: 1.25rem;
+    }
+
+        .form-floating-custom label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #334155;
+            margin-bottom: 0.35rem;
+            display: block;
+        }
+
+        .form-floating-custom .form-control,
+        .form-floating-custom textarea {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1.5px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 0.7rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.25s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            width: 100%;
+            font-family: inherit;
+        }
+
+            .form-floating-custom .form-control:focus,
+            .form-floating-custom textarea:focus {
+                border-color: #818cf8;
+                box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15), inset 0 2px 4px rgba(0,0,0,0.02);
+                background: #ffffff;
+            }
+
+        .form-floating-custom textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-floating-custom .text-danger {
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            display: block;
+        }
+
+    .form-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-top: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-save {
+        background: linear-gradient(135deg, #4f46e5, #4338ca);
+        border: none;
+        padding: 0.7rem 2rem;
+        border-radius: 60px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #fff;
+        transition: all 0.25s ease;
+        box-shadow: 0 8px 20px -6px rgba(79, 70, 229, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        cursor: pointer;
+    }
+
+        .btn-save:hover {
+            background: linear-gradient(135deg, #4338ca, #3730a3);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px -8px rgba(79, 70, 229, 0.4);
+            color: #fff;
+        }
+
+        .btn-save i {
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+        }
+
+        .btn-save:hover i {
+            transform: scale(1.1);
+        }
+
+    .btn-cancel {
+        background: transparent;
+        border: 1.5px solid #e2e8f0;
+        padding: 0.7rem 1.5rem;
+        border-radius: 60px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #475569;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+        .btn-cancel:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+            color: #0f172a;
+            text-decoration: none;
+        }
+
+    /* validation summary override */
+    .validation-summary-errors ul {
+        padding-left: 0;
+        list-style: none;
+        margin-bottom: 0.75rem;
+    }
+
+    .validation-summary-errors li {
+        background: #fee2e2;
+        color: #b91c1c;
+        border-radius: 0.75rem;
+        padding: 0.4rem 0.9rem;
+        font-size: 0.85rem;
+        margin-bottom: 0.3rem;
+        border-left: 4px solid #dc2626;
+    }
+
+    /* Responsive */
+    @@media (max-width: 576px) {
+        .edit-card {
+            padding: 1.8rem 1.2rem;
+        }
+
+        .edit-icon {
+            width: 65px;
+            height: 65px;
+        }
+
+            .edit-icon i {
+                font-size: 2.2rem;
+            }
+
+        .edit-title {
+            font-size: 1.5rem;
+        }
+
+        .form-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-save,
+        .btn-cancel {
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="edit-wrapper">
+    <div class="edit-card">
+        <!-- Icon -->
+        <div class="edit-icon">
+            <i class="bi bi-pencil-square"></i>
+        </div>
+
+        <h1 class="edit-title">Edit Equipment</h1>
+        <p class="edit-sub">Update the equipment details</p>
+
+        <!-- Form -->
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="validation-summary-errors text-danger"></div>
+            <input type="hidden" asp-for="EquipmentId" />
+
+            <div class="form-floating-custom">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" class="form-control" placeholder="e.g. Projector, Whiteboard" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating-custom">
+                <label asp-for="Category"></label>
+                <input asp-for="Category" class="form-control" placeholder="e.g. Audio-Visual, Stationery" />
+                <span asp-validation-for="Category" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating-custom">
+                <label asp-for="Description"></label>
+                <textarea asp-for="Description" class="form-control" rows="3" placeholder="Optional description..."></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-save">
+                    <i class="bi bi-check-circle"></i> Save Changes
+                </button>
+                <a asp-action="Index" class="btn-cancel">
+                    <i class="bi bi-x-circle"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

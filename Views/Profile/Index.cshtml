@@ -1,0 +1,312 @@
+﻿@model CoworkingSpace.Web.ViewModels.ProfileViewModel
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<style>
+    .profile-wrapper {
+        min-height: 80vh;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        padding: 1.5rem;
+        border-radius: 0;
+    }
+
+    .profile-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-radius: 2.5rem;
+        padding: 2.5rem 2rem;
+        max-width: 800px;
+        margin: 0 auto;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .profile-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.25);
+        }
+
+    .profile-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(145deg, #dbeafe, #bfdbfe);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.2rem;
+        box-shadow: 0 12px 28px -10px rgba(37, 99, 235, 0.25);
+    }
+
+        .profile-icon i {
+            font-size: 2.8rem;
+            color: #2563eb;
+            text-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+    .profile-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        color: #0f172a;
+        text-align: center;
+        margin-bottom: 0.25rem;
+    }
+
+    .profile-sub {
+        text-align: center;
+        color: #64748b;
+        font-size: 0.95rem;
+        margin-bottom: 2rem;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 0.3rem 0.5rem;
+        background: rgba(255, 255, 255, 0.4);
+        padding: 1rem 1.5rem;
+        border-radius: 1.2rem;
+        margin-bottom: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+        .info-grid dt {
+            font-weight: 600;
+            color: #475569;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            padding: 0.4rem 0;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+        }
+
+        .info-grid dd {
+            font-weight: 500;
+            color: #0f172a;
+            padding: 0.4rem 0;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+            margin-bottom: 0;
+            word-break: break-all;
+        }
+
+            .info-grid dt:last-of-type,
+            .info-grid dd:last-of-type {
+                border-bottom: none;
+            }
+
+    .section-title {
+        font-weight: 700;
+        color: #0f172a;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        border-bottom: 2px solid #e2e8f0;
+        padding-bottom: 0.5rem;
+    }
+
+        .section-title i {
+            color: #2563eb;
+        }
+
+    .form-floating-custom {
+        margin-bottom: 1.25rem;
+    }
+
+        .form-floating-custom label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #334155;
+            margin-bottom: 0.35rem;
+            display: block;
+        }
+
+        .form-floating-custom .form-control {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1.5px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 0.7rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.25s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            width: 100%;
+        }
+
+            .form-floating-custom .form-control:focus {
+                border-color: #3b82f6;
+                box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15), inset 0 2px 4px rgba(0,0,0,0.02);
+                background: #ffffff;
+            }
+
+        .form-floating-custom .text-danger {
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            display: block;
+        }
+
+    .btn-save {
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        border: none;
+        padding: 0.6rem 2rem;
+        border-radius: 60px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: #fff;
+        transition: all 0.25s ease;
+        box-shadow: 0 8px 20px -6px rgba(37, 99, 235, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        cursor: pointer;
+    }
+
+        .btn-save:hover {
+            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px -8px rgba(37, 99, 235, 0.4);
+            color: #fff;
+        }
+
+        .btn-save i {
+            font-size: 1.1rem;
+        }
+
+    .change-section {
+        background: rgba(255, 255, 255, 0.4);
+        border-radius: 1.2rem;
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+        .change-section + .change-section {
+            margin-top: 2rem;
+        }
+
+    .validation-summary-errors ul {
+        padding-left: 0;
+        list-style: none;
+        margin-bottom: 0.75rem;
+    }
+
+    .validation-summary-errors li {
+        background: #fee2e2;
+        color: #b91c1c;
+        border-radius: 0.75rem;
+        padding: 0.4rem 0.9rem;
+        font-size: 0.85rem;
+        margin-bottom: 0.3rem;
+        border-left: 4px solid #dc2626;
+    }
+
+    @@media (max-width: 576px) {
+        .profile-card {
+            padding: 1.5rem;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+
+            .info-grid dt {
+                border-bottom: none;
+                padding-bottom: 0.1rem;
+            }
+
+            .info-grid dd {
+                padding-top: 0;
+                border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+                margin-bottom: 0.3rem;
+            }
+
+                .info-grid dd:last-of-type {
+                    border-bottom: none;
+                }
+
+        .change-section {
+            padding: 1rem;
+        }
+    }
+</style>
+
+<div class="profile-wrapper">
+    <div class="profile-card">
+        <div class="profile-icon">
+            <i class="bi bi-person-circle"></i>
+        </div>
+
+        <h1 class="profile-title">My Profile</h1>
+        <p class="profile-sub">View your personal information and update your credentials</p>
+
+        <!-- ====== نمایش اطلاعات کاربر ====== -->
+        <h5 class="section-title"><i class="bi bi-info-circle"></i> Personal Information</h5>
+        <dl class="info-grid">
+            <dt>Full Name</dt>
+            <dd>@Model.Member.FullName</dd>
+
+            <dt>Email</dt>
+            <dd>@Model.Member.Email</dd>
+
+            <dt>Phone</dt>
+            <dd>@Model.Member.Phone</dd>
+
+            <dt>Register Date</dt>
+            <dd>@Model.Member.RegisterDate.ToString("dd MMM yyyy")</dd>
+        </dl>
+
+        <!-- ====== تغییر Full Name ====== -->
+        <div class="change-section">
+            <h5 class="section-title"><i class="bi bi-pencil"></i> Change Full Name</h5>
+            <form asp-action="ChangeFullName" asp-controller="Profile" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="form-floating-custom">
+                    <label for="fullName">New Full Name</label>
+                    <input type="text" name="fullName" id="fullName" class="form-control" placeholder="Enter new full name" value="@Model.Member.FullName" required />
+                </div>
+
+                <div class="form-floating-custom">
+                    <label for="currentPasswordName">Current Password</label>
+                    <input type="password" name="currentPassword" id="currentPasswordName" class="form-control" placeholder="Enter current password" required />
+                </div>
+
+                <button type="submit" class="btn-save">
+                    <i class="bi bi-check-circle"></i> Update Full Name
+                </button>
+            </form>
+        </div>
+
+        <!-- ====== تغییر رمز عبور ====== -->
+        <div class="change-section">
+            <h5 class="section-title"><i class="bi bi-lock"></i> Change Password</h5>
+            <form asp-action="ChangePassword" asp-controller="Profile" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="form-floating-custom">
+                    <label for="currentPassword">Current Password</label>
+                    <input type="password" name="currentPassword" id="currentPassword" class="form-control" placeholder="Enter current password" required />
+                </div>
+
+                <div class="form-floating-custom">
+                    <label for="newPassword">New Password</label>
+                    <input type="password" name="newPassword" id="newPassword" class="form-control" placeholder="Enter new password" required minlength="6" />
+                </div>
+
+                <div class="form-floating-custom">
+                    <label for="confirmPassword">Confirm New Password</label>
+                    <input type="password" name="confirmPassword" id="confirmPassword" class="form-control" placeholder="Confirm new password" required />
+                </div>
+
+                <button type="submit" class="btn-save">
+                    <i class="bi bi-check-circle"></i> Update Password
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,198 @@
+@{
+    var success = TempData["Success"] as string;
+    var error = TempData["Error"] as string;
+}
+
+<style>
+    .notif-container {
+        position: fixed;
+        top: 1.5rem;
+        right: 1.5rem;
+        z-index: 9999;
+        max-width: 420px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        pointer-events: none;
+    }
+
+        .notif-container .notif {
+            pointer-events: auto;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 1.2rem;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            animation: slideInRight 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            transition: all 0.3s ease;
+            margin-bottom: 0;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+            .notif-container .notif:hover {
+                transform: translateX(4px);
+                box-shadow: 0 20px 48px -14px rgba(0, 0, 0, 0.3);
+            }
+
+        .notif-container .notif-success {
+            background: rgba(209, 250, 229, 0.92);
+            color: #065f46;
+            border-left: 6px solid #10b981;
+        }
+
+        .notif-container .notif-danger {
+            background: rgba(254, 226, 226, 0.92);
+            color: #991b1b;
+            border-left: 6px solid #ef4444;
+        }
+
+        .notif-container .notif i {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .notif-container .notif-success i {
+            color: #10b981;
+        }
+
+        .notif-container .notif-danger i {
+            color: #ef4444;
+        }
+
+        .notif-container .notif .notif-text {
+            flex: 1;
+            word-break: break-word;
+        }
+
+        .notif-container .notif-close {
+            background: transparent;
+            border: none;
+            font-size: 1.2rem;
+            color: inherit;
+            opacity: 0.5;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 50%;
+            transition: all 0.2s;
+            line-height: 1;
+            flex-shrink: 0;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .notif-container .notif-close:hover {
+                background: rgba(0, 0, 0, 0.06);
+                opacity: 0.8;
+            }
+
+    /* استفاده از دو @@ برای فرار از دست Razor */
+    @@keyframes slideInRight {
+        0% {
+            opacity: 0;
+            transform: translateX(40px) scale(0.96);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+    }
+
+    .notif-container .notif.hide {
+        animation: slideOutRight 0.3s ease forwards;
+    }
+
+    @@keyframes slideOutRight {
+        0% {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+
+        100% {
+            opacity: 0;
+            transform: translateX(40px) scale(0.96);
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .notif-container {
+            top: 0.75rem;
+            right: 0.75rem;
+            left: 0.75rem;
+            max-width: none;
+            width: auto;
+        }
+
+            .notif-container .notif {
+                padding: 0.75rem 1rem;
+                font-size: 0.85rem;
+                border-radius: 1rem;
+            }
+
+                .notif-container .notif i {
+                    font-size: 1.2rem;
+                }
+    }
+</style>
+
+<div class="notif-container" id="notifContainer">
+    @if (!string.IsNullOrEmpty(success))
+    {
+        <div class="notif notif-success" role="alert" data-dismiss="alert">
+            <i class="bi bi-check-circle-fill"></i>
+            <span class="notif-text">@success</span>
+            <button type="button" class="notif-close" data-bs-dismiss="alert" aria-label="Close">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(error))
+    {
+        <div class="notif notif-danger" role="alert" data-dismiss="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span class="notif-text">@error</span>
+            <button type="button" class="notif-close" data-bs-dismiss="alert" aria-label="Close">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+    }
+</div>
+
+<script>
+    (function () {
+        var alerts = document.querySelectorAll('#notifContainer .notif');
+        alerts.forEach(function (alert) {
+            setTimeout(function () {
+                if (alert && alert.parentNode) {
+                    alert.classList.add('hide');
+                    setTimeout(function () {
+                        if (alert.parentNode) alert.remove();
+                    }, 300);
+                }
+            }, 6000);
+        });
+
+        document.querySelectorAll('#notifContainer .notif-close').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                var alert = this.closest('.notif');
+                if (alert) {
+                    alert.classList.add('hide');
+                    setTimeout(function () {
+                        if (alert.parentNode) alert.remove();
+                    }, 300);
+                }
+            });
+        });
+    })();
+</script>

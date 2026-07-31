@@ -1,0 +1,195 @@
+@{
+    ViewData["Title"] = "Privacy";
+}
+
+<style>
+    .privacy-wrapper {
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        padding: 1.5rem;
+    }
+
+    .privacy-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 2.5rem;
+        padding: 3rem 2.5rem;
+        max-width: 680px;
+        width: 100%;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: center;
+    }
+
+        .privacy-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.25);
+        }
+
+    .privacy-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(145deg, #e0e7ff, #c7d2fe);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.2rem;
+        box-shadow: 0 12px 28px -10px rgba(99, 102, 241, 0.25);
+    }
+
+        .privacy-icon i {
+            font-size: 2.8rem;
+            color: #4f46e5;
+            text-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+        }
+
+    .privacy-title {
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        color: #0f172a;
+        margin-bottom: 0.75rem;
+    }
+
+    .privacy-sub {
+        font-size: 1rem;
+        color: #475569;
+        line-height: 1.7;
+        max-width: 480px;
+        margin: 0 auto;
+    }
+
+        .privacy-sub i {
+            color: #4f46e5;
+            margin: 0 0.2rem;
+        }
+
+    .privacy-divider {
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(90deg, #4f46e5, #818cf8);
+        border-radius: 10px;
+        margin: 1.2rem auto 1.5rem;
+    }
+
+    .privacy-features {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+        text-align: left;
+    }
+
+    .privacy-feature {
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 1rem;
+        padding: 0.7rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-size: 0.9rem;
+        color: #1e293b;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        transition: background 0.2s;
+    }
+
+        .privacy-feature:hover {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .privacy-feature i {
+            color: #4f46e5;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+    .privacy-footer {
+        margin-top: 2rem;
+        font-size: 0.85rem;
+        color: #94a3b8;
+        border-top: 1px solid #e2e8f0;
+        padding-top: 1.2rem;
+    }
+
+        .privacy-footer a {
+            color: #4f46e5;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+            .privacy-footer a:hover {
+                text-decoration: underline;
+            }
+
+    /* Responsive */
+    @@media (max-width: 576px) {
+        .privacy-card {
+            padding: 2rem 1.2rem;
+        }
+
+        .privacy-icon {
+            width: 65px;
+            height: 65px;
+        }
+
+            .privacy-icon i {
+                font-size: 2.2rem;
+            }
+
+        .privacy-title {
+            font-size: 1.6rem;
+        }
+
+        .privacy-features {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="privacy-wrapper">
+    <div class="privacy-card">
+        <!-- Icon -->
+        <div class="privacy-icon">
+            <i class="bi bi-shield-check"></i>
+        </div>
+
+        <h1 class="privacy-title">Privacy Policy</h1>
+        <div class="privacy-divider"></div>
+
+        <p class="privacy-sub">
+            We are committed to protecting your privacy.
+            This page explains how we collect, use, and safeguard your personal information when you use our platform.
+        </p>
+
+        <!-- Quick features (just visual) -->
+        <div class="privacy-features">
+            <div class="privacy-feature">
+                <i class="bi bi-lock"></i>
+                <span>Data encryption</span>
+            </div>
+            <div class="privacy-feature">
+                <i class="bi bi-person-check"></i>
+                <span>Your data, your control</span>
+            </div>
+            <div class="privacy-feature">
+                <i class="bi bi-eye-slash"></i>
+                <span>No third-party sharing</span>
+            </div>
+            <div class="privacy-feature">
+                <i class="bi bi-clock"></i>
+                <span>Retention policy</span>
+            </div>
+        </div>
+
+        <div class="privacy-footer">
+            <span>For full details, please review our <a href="#">complete privacy policy</a>.</span><br />
+            <span class="text-muted" style="font-size:0.75rem;">Last updated: @DateTime.Now.ToString("MMMM dd, yyyy")</span>
+        </div>
+    </div>
+</div>

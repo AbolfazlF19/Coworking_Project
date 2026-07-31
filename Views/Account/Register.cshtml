@@ -1,0 +1,284 @@
+@model CoworkingSpace.Web.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<style>
+    .register-wrapper {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        padding: 1.5rem;
+    }
+
+    .register-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 2.5rem;
+        padding: 2.5rem 2rem;
+        max-width: 600px;
+        width: 100%;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .register-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.25);
+        }
+
+    .register-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(145deg, #d1fae5, #a7f3d0);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.2rem;
+        box-shadow: 0 12px 28px -10px rgba(16, 185, 129, 0.25);
+    }
+
+        .register-icon i {
+            font-size: 2.8rem;
+            color: #059669;
+            text-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
+        }
+
+    .register-title {
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        color: #0f172a;
+        text-align: center;
+        margin-bottom: 0.25rem;
+    }
+
+    .register-sub {
+        text-align: center;
+        color: #64748b;
+        font-size: 0.95rem;
+        margin-bottom: 1.8rem;
+    }
+
+    .form-floating-custom {
+        margin-bottom: 1.25rem;
+    }
+
+        .form-floating-custom label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #334155;
+            margin-bottom: 0.35rem;
+            display: block;
+        }
+
+        .form-floating-custom .form-control {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1.5px solid #e2e8f0;
+            border-radius: 1rem;
+            padding: 0.7rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.25s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            width: 100%;
+        }
+
+            .form-floating-custom .form-control:focus {
+                border-color: #10b981;
+                box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15), inset 0 2px 4px rgba(0,0,0,0.02);
+                background: #ffffff;
+            }
+
+        .form-floating-custom .text-danger {
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            display: block;
+        }
+
+    .form-text-custom {
+        font-size: 0.8rem;
+        color: #64748b;
+        background: #f8fafc;
+        padding: 0.6rem 1rem;
+        border-radius: 0.75rem;
+        border-left: 4px solid #10b981;
+        margin-bottom: 1.25rem;
+    }
+
+    .row-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 1.25rem;
+    }
+
+    .btn-register {
+        background: linear-gradient(135deg, #1e293b, #0f172a);
+        border: none;
+        padding: 0.75rem;
+        border-radius: 60px;
+        font-weight: 700;
+        font-size: 1rem;
+        color: #fff;
+        transition: all 0.25s ease;
+        box-shadow: 0 8px 20px -6px rgba(15, 23, 42, 0.3);
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        margin-top: 0.25rem;
+    }
+
+        .btn-register:hover {
+            background: linear-gradient(135deg, #0f172a, #020617);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px -8px rgba(15, 23, 42, 0.4);
+            color: #fff;
+        }
+
+        .btn-register i {
+            font-size: 1.2rem;
+            transition: transform 0.2s;
+        }
+
+        .btn-register:hover i {
+            transform: translateX(4px);
+        }
+
+    .login-link {
+        text-align: center;
+        margin-top: 1.2rem;
+        font-size: 0.9rem;
+        color: #64748b;
+    }
+
+        .login-link a {
+            color: #059669;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+            .login-link a:hover {
+                color: #047857;
+                text-decoration: underline;
+            }
+
+    /* validation summary override */
+    .validation-summary-errors ul {
+        padding-left: 0;
+        list-style: none;
+        margin-bottom: 0.75rem;
+    }
+
+    .validation-summary-errors li {
+        background: #fee2e2;
+        color: #b91c1c;
+        border-radius: 0.75rem;
+        padding: 0.4rem 0.9rem;
+        font-size: 0.85rem;
+        margin-bottom: 0.3rem;
+        border-left: 4px solid #dc2626;
+    }
+
+    /* Responsive */
+    @@media (max-width: 576px) {
+        .register-card {
+            padding: 1.8rem 1.2rem;
+        }
+
+        .register-icon {
+            width: 65px;
+            height: 65px;
+        }
+
+            .register-icon i {
+                font-size: 2.2rem;
+            }
+
+        .register-title {
+            font-size: 1.5rem;
+        }
+
+        .row-grid {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+    }
+</style>
+
+<div class="register-wrapper">
+    <div class="register-card">
+        <!-- Icon -->
+        <div class="register-icon">
+            <i class="bi bi-person-plus-fill"></i>
+        </div>
+
+        <h1 class="register-title">Create your member account</h1>
+        <p class="register-sub">Register to book spaces, view reservations and pay online.</p>
+
+        <!-- Form -->
+        <form asp-action="Register" asp-controller="Account" method="post">
+            <div asp-validation-summary="All" class="validation-summary-errors text-danger"></div>
+            <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+
+            <!-- FullName (full width) -->
+            <div class="form-floating-custom">
+                <label asp-for="FullName"></label>
+                <input asp-for="FullName" class="form-control" placeholder="John Doe" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+
+            <!-- Phone + Email (two columns) -->
+            <div class="row-grid">
+                <div class="form-floating-custom">
+                    <label asp-for="Phone"></label>
+                    <input asp-for="Phone" class="form-control" placeholder="+1 234 567 890" />
+                    <span asp-validation-for="Phone" class="text-danger"></span>
+                </div>
+                <div class="form-floating-custom">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" class="form-control" autocomplete="email" placeholder="you@example.com" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Password + ConfirmPassword (two columns) -->
+            <div class="row-grid">
+                <div class="form-floating-custom">
+                    <label asp-for="Password"></label>
+                    <input asp-for="Password" class="form-control" autocomplete="new-password" placeholder="••••••••" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-floating-custom">
+                    <label asp-for="ConfirmPassword"></label>
+                    <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" placeholder="••••••••" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Password hint -->
+            <div class="form-text-custom">
+                <i class="bi bi-info-circle me-1"></i>
+                Password must be at least 8 characters and include upper/lower case, a digit and a special character.
+            </div>
+
+            <button type="submit" class="btn-register">
+                <i class="bi bi-person-plus"></i> Register
+            </button>
+        </form>
+
+        <div class="login-link">
+            Already have an account? <a asp-controller="Account" asp-action="Login">Login</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

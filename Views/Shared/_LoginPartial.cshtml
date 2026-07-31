@@ -1,0 +1,233 @@
+@using Microsoft.AspNetCore.Identity
+@using CoworkingSpace.Web.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<style>
+    /* ===== Login Partial Styles (Glassmorphism) ===== */
+    .login-partial .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 60px;
+        color: #1e293b;
+        font-weight: 500;
+        transition: all 0.2s;
+        background: rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(6px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+        .login-partial .nav-link:hover {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: rgba(255, 255, 255, 0.8);
+            color: #0f172a;
+        }
+
+        .login-partial .nav-link i {
+            font-size: 1.3rem;
+            color: #4f46e5;
+        }
+
+    .login-partial .dropdown-menu {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-radius: 1.5rem;
+        box-shadow: 0 20px 48px -16px rgba(0, 0, 0, 0.15);
+        padding: 0.6rem;
+        min-width: 200px;
+        animation: dropdownFade 0.25s ease;
+    }
+
+    @@keyframes dropdownFade {
+        0% {
+            opacity: 0;
+            transform: translateY(-8px) scale(0.98);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .login-partial .dropdown-item {
+        border-radius: 0.9rem;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        color: #1e293b;
+        transition: all 0.15s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+        .login-partial .dropdown-item:hover {
+            background: rgba(79, 70, 229, 0.06);
+            color: #0f172a;
+        }
+
+        .login-partial .dropdown-item i {
+            color: #4f46e5;
+            font-size: 1.1rem;
+            width: 1.4rem;
+            text-align: center;
+        }
+
+        .login-partial .dropdown-item.text-danger i {
+            color: #dc2626;
+        }
+
+        .login-partial .dropdown-item.text-danger:hover {
+            background: rgba(220, 38, 38, 0.06);
+            color: #b91c1c;
+        }
+
+    .login-partial .dropdown-divider {
+        margin: 0.3rem 0.6rem;
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .login-partial .dropdown-item-text {
+        font-size: 0.8rem;
+        color: #64748b;
+        padding: 0.3rem 1rem;
+        border-radius: 0.9rem;
+        background: rgba(241, 245, 249, 0.4);
+    }
+
+        .login-partial .dropdown-item-text strong {
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+    .login-partial .btn-logout {
+        background: transparent;
+        border: none;
+        width: 100%;
+        text-align: left;
+        font-weight: 500;
+        font-size: 0.95rem;
+        cursor: pointer;
+    }
+
+        .login-partial .btn-logout i {
+            color: #dc2626;
+        }
+
+    /* Public nav links (for non-logged-in) */
+    .login-partial.public .nav-link {
+        background: transparent;
+        border: none;
+        color: #475569;
+        padding: 0.4rem 0.8rem;
+        border-radius: 60px;
+        transition: all 0.2s;
+    }
+
+        .login-partial.public .nav-link:hover {
+            background: rgba(255, 255, 255, 0.5);
+            color: #0f172a;
+        }
+
+        .login-partial.public .nav-link.btn-primary-glass {
+            background: linear-gradient(135deg, #4f46e5, #4338ca);
+            color: #fff;
+            padding: 0.4rem 1.2rem;
+            box-shadow: 0 4px 16px rgba(79, 70, 229, 0.2);
+        }
+
+            .login-partial.public .nav-link.btn-primary-glass:hover {
+                background: linear-gradient(135deg, #4338ca, #3730a3);
+                transform: translateY(-2px);
+                box-shadow: 0 8px 24px rgba(79, 70, 229, 0.3);
+                color: #fff;
+            }
+
+    /* Responsive */
+    @@media (max-width: 576px) {
+        .login-partial .dropdown-menu {
+            min-width: 180px;
+            right: 0;
+            left: auto;
+        }
+
+        .login-partial .nav-link {
+            font-size: 0.9rem;
+            padding: 0.3rem 0.7rem;
+        }
+
+            .login-partial .nav-link i {
+                font-size: 1.1rem;
+            }
+    }
+</style>
+
+<div class="login-partial">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        var user = await UserManager.GetUserAsync(User);
+        var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();
+
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
+                <i class="bi bi-person-circle"></i>
+                <span>@(user?.UserName ?? "User")</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li class="dropdown-item-text">
+                    <i class="bi bi-shield-check"></i>
+                    Role: <strong>@(roles.Any() ? string.Join(", ", roles) : "None")</strong>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+
+                @if (User.IsInRole("Member"))
+                {
+                    <li>
+                        <a class="dropdown-item" asp-controller="Reservations" asp-action="Index">
+                            <i class="bi bi-calendar-check"></i> My Reservations
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" asp-controller="Payments" asp-action="Index">
+                            <i class="bi bi-credit-card"></i> My Payments
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li>
+                        <a class="dropdown-item" asp-controller="Dashboard" asp-action="Index">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                }
+
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                        <button type="submit" class="dropdown-item text-danger btn-logout">
+                            <i class="bi bi-box-arrow-right"></i> Logout
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Account" asp-action="Register">
+                <i class="bi bi-person-plus"></i> Register
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link btn-primary-glass" asp-controller="Account" asp-action="Login">
+                <i class="bi bi-box-arrow-in-right"></i> Login
+            </a>
+        </li>
+    }
+</div>
